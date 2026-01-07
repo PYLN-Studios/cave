@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -6765965966868395423}
   - component: {fileID: -1851313708835495806}
   - component: {fileID: -6337258574022047128}
+  - component: {fileID: -3796734468260230511}
   m_Layer: 8
   m_Name: LaserGun
   m_TagString: Untagged
@@ -64,6 +65,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -99,8 +103,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c16549610bfe4458aa9389201d072bb6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8147234898669316303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -111,8 +115,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0ce4c856e86508419032ac135fe111b, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   ShotOrigin: {fileID: 6328546748666097053}
   Automatic: 0
   FiringRate: 1.5
@@ -145,8 +149,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f94e83cecd576dc4e8d9fded65b3865b, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   ProjectilePrefab: {fileID: 7460990098522836823, guid: 1e149f3ed7b84c2428267a2168c1f9e1, type: 3}
   VisualsSyncMode: 0
 --- !u!114 &-1851313708835495806
@@ -159,18 +163,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c79d771cedb4794bf100ce60df5f764, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   DefaultGhostMode: 2
   SupportedGhostModes: 3
   OptimizationMode: 0
   Importance: 1
+  MaxSendRate: 0
   prefabId: 44cc784d5b8c9594baabe6f315e02449
   HasOwner: 1
   SupportAutoCommandTarget: 0
   TrackInterpolationDelay: 1
   GhostGroup: 0
   UsePreSerialization: 0
+  UseSingleBaseline: 0
+  RollbackPredictedSpawnedGhostState: 0
+  RollbackPredictionOnStructuralChanges: 1
 --- !u!114 &-6337258574022047128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,14 +189,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfdaa6c06fe64fbda2b16e07a4ee0b25, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   ComponentOverrides:
   - FullTypeName: Unity.Transforms.LocalTransform
     EntityIndex: 0
     PrefabType: -1
     SendTypeOptimization: -1
     VariantHash: 10188360468653526834
+--- !u!114 &-3796734468260230511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5179934649230605806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 276884111e13d8f4dbc698ea96b84c2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  soundList:
+  - {fileID: 8300000, guid: 39f32f4fe41064245a27afa4757c5427, type: 3}
+  - {fileID: 8300000, guid: 5f2ffda59c2c51c48a3d69d24b8e9ee3, type: 3}
+  - {fileID: 8300000, guid: f7c7b04b5a585c04a8f7b5d99029322d, type: 3}
 --- !u!1 &6328546748666097053
 GameObject:
   m_ObjectHideFlags: 0

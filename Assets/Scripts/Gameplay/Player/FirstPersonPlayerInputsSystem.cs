@@ -2,9 +2,13 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.NetCode;
 using UnityEngine;
+using UnityEngine.SoundManager;
+
+
 
 namespace Unity.Template.CompetitiveActionMultiplayer
 {
+    
     /// <summary>
     /// Reads player inputs and forward them to the <see cref="FirstPersonPlayerCommands"/>
     /// that the server is using to process each character movement.
@@ -13,6 +17,7 @@ namespace Unity.Template.CompetitiveActionMultiplayer
     [WorldSystemFilter(WorldSystemFilterFlags.ClientSimulation)]
     public partial struct FirstPersonPlayerInputsSystem : ISystem
     {
+        // public SoundManager soundManage;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate(SystemAPI.QueryBuilder().WithAll<FirstPersonPlayer, FirstPersonPlayerCommands>()
@@ -75,6 +80,13 @@ namespace Unity.Template.CompetitiveActionMultiplayer
                 playerCommands.ValueRW.ShootPressed = default;
                 if (defaultActionsMap.Shoot.WasPressedThisFrame())
                     playerCommands.ValueRW.ShootPressed.Set();
+                    //SoundManager.PlaySound(SoundType.PAPAKAKAKA);
+                if (defaultActionsMap.Shoot.WasPressedThisFrame())
+                {
+                    playerCommands.ValueRW.ShootPressed.Set();
+                    SoundManager.PlaySound(SoundType.PAPAKAKAKA);
+                }
+                 
 
                 //Shoot released
                 playerCommands.ValueRW.ShootReleased = default;
