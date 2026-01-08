@@ -663,9 +663,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundList:
-  - {fileID: 8300000, guid: 39f32f4fe41064245a27afa4757c5427, type: 3}
-  - {fileID: 8300000, guid: 5f2ffda59c2c51c48a3d69d24b8e9ee3, type: 3}
-  - {fileID: 8300000, guid: 3b28425e5b4b6e642894a209c4312f9a, type: 3}
+  - name: PLAYERFOOTSTEP
+    sounds:
+    - {fileID: 8300000, guid: 39f32f4fe41064245a27afa4757c5427, type: 3}
+  - name: MAMMOTHFOOTSTEP
+    sounds:
+    - {fileID: 8300000, guid: 5f2ffda59c2c51c48a3d69d24b8e9ee3, type: 3}
+  - name: PAPAKAKAKA
+    sounds:
+    - {fileID: 8300000, guid: 3b28425e5b4b6e642894a209c4312f9a, type: 3}
+    - {fileID: 8300000, guid: 188eb0012696dd747a944bc4ffaaba60, type: 3}
+  - name: DEAGLECSGO
+    sounds:
+    - {fileID: 8300000, guid: 188eb0012696dd747a944bc4ffaaba60, type: 3}
 --- !u!4 &427665217
 Transform:
   m_ObjectHideFlags: 0
@@ -1119,14 +1129,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2109733013}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -1203,17 +1213,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 3
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
   m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

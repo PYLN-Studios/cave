@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Project Path="Unity.Template.CompetitiveActionMultiplayer.csproj" />
+  <Project Path="Unity.Template.CompetitiveActionMultiplayer.Editor.Tutorials.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Unity.Template.CompetitiveActionMultiplayer.Server.Editor.csproj" />
+</Solution>

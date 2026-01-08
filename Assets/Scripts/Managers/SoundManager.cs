@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using System;
 
 /*
 This is where we will be putting all the sound types. Add anything to this part of the script! 
@@ -11,12 +12,14 @@ namespace UnityEngine.SoundManager
     {
         PLAYERFOOTSTEP,
         MAMMOTHFOOTSTEP,
-        PAPAKAKAKA
+        PAPAKAKAKA,
+        DEAGLECSGO
     }
 
+    [RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
     public class SoundManager : MonoBehaviour
     {
-        [SerializeField] private AudioClip[] soundList;
+        [SerializeField] private SoundList[] soundList;
 
         public static SoundManager instance;
     
@@ -36,40 +39,27 @@ namespace UnityEngine.SoundManager
 
         public static void PlaySound(SoundType sound, float volume = 1f)
         {
-            if (instance == null)
-            {
-                Debug.LogError("SoundManager.instance is NULL. Put a SoundManager in the scene (enabled).");
-                return;
-            }
-
-            if (instance.audioSource == null)
-            {
-                Debug.LogError("SoundManager.audioSource is NULL. Add an AudioSource to the same GameObject.");
-                return;
-            }
-
-            int idx = (int)sound;
-
-            if (instance.soundList == null)
-            {
-                Debug.LogError("SoundManager.soundList is NULL (not assigned).");
-                return;
-            }
-
-            if (idx < 0 || idx >= instance.soundList.Length)
-            {
-                Debug.LogError($"SoundManager.soundList is too small. Need index {idx} for {sound}. Current size={instance.soundList.Length}");
-                return;
-            }
-
-            if (instance.soundList[idx] == null)
-            {
-                Debug.LogError($"SoundManager.soundList[{idx}] for {sound} is NULL. Assign an AudioClip in the Inspector.");
-                return;
-            }
-
-            instance.audioSource.PlayOneShot(instance.soundList[idx], volume);
+            AudioClip[] clips = instance.soundList[(int)sound].Sounds;
+            AudioClip randomClip = clips[UnityEngine.Random.Range(0, clips.Length)]; 
+            instance.audioSource.PlayOneShot(randomClip, volume); 
         }
 
+        public void OnEnable()
+        {
+            string[] names = Enum.GetNames(typeof(SoundType));
+            Array.Resize(ref soundList, names.Length);
+            for (int i = 0; i < soundList.Length; i++)
+            {
+                soundList[i].name = names[i];
+            }
+        }
+
+    }
+    [Serializable]
+    public struct SoundList
+    {
+        public AudioClip[] Sounds {get => sounds;}
+        [HideInInspector] public string name;
+        [SerializeField] private AudioClip[] sounds;
     }
 }
