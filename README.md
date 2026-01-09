@@ -1,2 +1,0 @@
-# cave
-Friend Slop Game!!! 
