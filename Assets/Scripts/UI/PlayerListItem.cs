@@ -13,6 +13,7 @@ public class PlayerListItem : MonoBehaviour {
     [SerializeField] private Color localPlayerColor = new Color(0.2f, 0.5f, 0.8f, 0.3f);
 
     public void Setup(string playerName, bool isReady, bool isLocalPlayer) {
+        Debug.Log($"name {playerName} status {isReady}");
         playerNameText.text = playerName;
 
         if (isReady) {

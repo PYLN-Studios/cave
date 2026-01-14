@@ -57,7 +57,10 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
     public void HandleDisplayNameChanged(string oldValue, string newValue) => UpdateDisplay();
 
     private void UpdateDisplay() {
-        if (Room == null) return;
+        if (Room == null) {
+            Debug.LogWarning("room null");
+            return;
+        }
 
         if (!isOwned) {
             foreach (var player in Room.RoomPlayers) {
@@ -69,7 +72,15 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
             return;
         }
 
-        if (playerListContainer == null) return;
+        if (playerListContainer == null) {
+            Debug.LogWarning("playerListContainer null");
+            return;
+        }
+
+        if (playerListItemPrefab == null) {
+            Debug.LogWarning("playerListItemPrefab null");
+            return;
+        }
 
         // Clear existing list items
         foreach (Transform child in playerListContainer) {

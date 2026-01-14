@@ -17,8 +17,10 @@ public class PlayerSpawnSystem : NetworkBehaviour
     {
         NetworkManagerLobby.OnServerReadied += SpawnPlayer;
 
-        // Populate spawn points
-        availableSpawnPoints = spawnPoints.ToList();
+        // Find spawn points in scene by tag
+        spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint")
+            .Select(go => go.transform)
+            .ToArray();
     }
 
     private void OnDestroy()
@@ -29,6 +31,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
     [Server]
     public void SpawnPlayer(NetworkConnectionToClient conn)
     {
+        Debug.Log($"SpawnPlayer called for connection: {conn.connectionId}");
         // Get spawn position
         Transform spawnPoint = GetNextSpawnPoint();
         
@@ -38,8 +41,12 @@ public class PlayerSpawnSystem : NetworkBehaviour
             spawnPoint.position,
             spawnPoint.rotation
         );
+        // If you use spawn, isLocalPlayer doesn't work
+        // NetworkServer.Spawn(playerInstance, conn);
 
-        NetworkServer.Spawn(playerInstance, conn);
+        // Use ReplacePlayer rather than AddPlayer because we have the GamePlayer already for this connection
+        NetworkServer.ReplacePlayerForConnection(conn, playerInstance, ReplacePlayerOptions.KeepAuthority);
+        Debug.Log($"Spawned player, hasAuthority: {playerInstance.GetComponent<NetworkIdentity>().isOwned}");
     }
 
     private Transform GetNextSpawnPoint()

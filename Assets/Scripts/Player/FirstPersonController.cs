@@ -1,15 +1,12 @@
 ﻿using UnityEngine;
+using Mirror;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-using Mirror;
 #endif
 
 namespace StarterAssets
 {
 	[RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM
-	[RequireComponent(typeof(PlayerInput))]
-#endif
 	public class FirstPersonController : NetworkBehaviour
 	{
 		[Header("Player")]
@@ -75,6 +72,8 @@ namespace StarterAssets
 
 		private const float _threshold = 0.01f;
 
+
+
 		private bool IsCurrentDeviceMouse
 		{
 			get
@@ -87,56 +86,127 @@ namespace StarterAssets
 			}
 		}
 
-		private void Awake()
-		{
-			// get a reference to our main camera
-			if (_mainCamera == null)
-			{
-				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-			}
-		}
+        public override void OnStartClient() {
 
-		private void Start()
-		{
-			_controller = GetComponent<CharacterController>();
-			_input = GetComponent<StarterAssetsInputs>();
+			if (isOwned && !isLocalPlayer) {
+				StartCoroutine(DelayedLocalPlayerSetup());
+			}
+        }
+
+        //DEBUG
+        private System.Collections.IEnumerator DelayedLocalPlayerSetup() {
+            yield return null; // Wait one frame
+
+            if (isOwned) {
+                SetupLocalPlayer();
+            }
+        }
+		// DEBUG 2
+        private void SetupLocalPlayer() {
+            Debug.Log("SetupLocalPlayer called");
+
+            _input = GetComponent<StarterAssetsInputs>();
+            _controller = GetComponent<CharacterController>();
+
+            Debug.Log($"_input: {(_input == null ? "NULL" : "assigned")}");
+            Debug.Log($"_controller: {(_controller == null ? "NULL" : "assigned")}");
+
+            if (_mainCamera == null) {
+                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+            }
+
+            var vcam = FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
+            Debug.Log($"vcam: {(vcam == null ? "NULL" : vcam.name)}");
+            Debug.Log($"CinemachineCameraTarget: {(CinemachineCameraTarget == null ? "NULL" : CinemachineCameraTarget.name)}");
+
+            if (vcam != null && CinemachineCameraTarget != null) {
+                vcam.Follow = CinemachineCameraTarget.transform;
+            }
+
 #if ENABLE_INPUT_SYSTEM
-			_playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
+            _playerInput = GetComponent<PlayerInput>();
+            if (_playerInput != null) {
+                _playerInput.enabled = true;
+                Debug.Log($"_playerInput.enabled after setting: {_playerInput.enabled}");
+            }
+                
 #endif
 
-			// reset our timeouts on start
-			_jumpTimeoutDelta = JumpTimeout;
-			_fallTimeoutDelta = FallTimeout;
-		}
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
 
-		[Client]
+        public override void OnStartLocalPlayer() {
+            Debug.Log("OnStartLocalPlayer called!");
+            SetupLocalPlayer();
+        }
+   //     public override void OnStartLocalPlayer() {
+   //         Debug.Log("OnStartLocalPlayer called");
+
+   //         // Re-grab references just in case
+   //         _input = GetComponent<StarterAssetsInputs>();
+   //         _controller = GetComponent<CharacterController>();
+
+   //         if (_mainCamera == null) {
+   //             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+   //         }
+
+   //         // Find Cinemachine and set follow target
+   //         var vcam = FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
+   //         if (vcam != null && CinemachineCameraTarget != null) {
+   //             vcam.Follow = CinemachineCameraTarget.transform;
+   //         }
+
+			//#if ENABLE_INPUT_SYSTEM
+   //         _playerInput = GetComponent<PlayerInput>();
+   //         if (_playerInput != null)
+   //             _playerInput.enabled = true;
+			//#endif
+
+   //         Cursor.lockState = CursorLockMode.Locked;
+   //         Cursor.visible = false;
+   //     }
+        private void Start()
+		{
+			Debug.Log("start called ----------------");
+			_controller = GetComponent<CharacterController>();
+			_input = GetComponent<StarterAssetsInputs>();
+
+            // reset our timeouts on start
+            _jumpTimeoutDelta = JumpTimeout;
+			_fallTimeoutDelta = FallTimeout;
+
+            // Disable input by default, OnStartLocalPlayer will enable it
+
+            // -------------------------------------------------------------------------------------------------------
+            // TODO: This improves performance by like <1% probably by limiting unnecessary input tracking, but it's causing an
+			// inconsistent problem (1 in 4 runs on editor) where player movement gets disabled incorrectly so I'm leaving for future investigation.
+			// This is already blocked in Update(), so not worth fixing rn
+
+            //#if ENABLE_INPUT_SYSTEM
+            //            _playerInput = GetComponent<PlayerInput>();
+            //            if (_playerInput != null && !isLocalPlayer)
+            //                _playerInput.enabled = false;
+            //#endif
+            // -------------------------------------------------------------------------------------------------------
+        }
+
+        [Client]
 		private void Update()
 		{
-			if (!isOwned) { return; }
-			//JumpAndGravity();
-			//GroundedCheck();
-			//Move();
-			CmdMove();
-		}
-
-		[Command]
-		private void CmdMove() {
-			// Insert any validation here - if we really want this is where we'd check if the request is for the correct player to move
-			RpcMove();
-		}
-
-		[ClientRpc]
-		private void RpcMove() {
+            if (!isLocalPlayer) return;
+			if (_input == null) return;
+            //Debug.Log($"_input.move: {_input.move} _playerInput.enabled: {_playerInput.enabled}");
             JumpAndGravity();
-            GroundedCheck();
-            Move();
-        }
+			GroundedCheck();
+			Move();
+		}
 
 		private void LateUpdate()
 		{
-			CameraRotation();
+            if (!isLocalPlayer) return;
+            if (_input == null) return;
+            CameraRotation();
 		}
 
 		private void GroundedCheck()
@@ -161,7 +231,9 @@ namespace StarterAssets
 				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
 				// Update Cinemachine camera target pitch
-				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
+				if (CinemachineCameraTarget != null) {
+                    CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
+                }
 
 				// rotate the player left and right
 				transform.Rotate(Vector3.up * _rotationVelocity);
@@ -217,7 +289,8 @@ namespace StarterAssets
 
 		private void JumpAndGravity()
 		{
-			if (Grounded)
+            Debug.Log($"Jump - Grounded: {Grounded}, _input.jump: {_input.jump}, _jumpTimeoutDelta: {_jumpTimeoutDelta}");
+            if (Grounded)
 			{
 				// reset the fall timeout timer
 				_fallTimeoutDelta = FallTimeout;

@@ -222,6 +222,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30d663bd4fbda594caac1f6597301228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarterAssets.FirstPersonController
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   MoveSpeed: 4
   SprintSpeed: 6
   RotationSpeed: 1
@@ -235,8 +238,8 @@ MonoBehaviour:
   GroundedRadius: 0.5
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 0
-  CinemachineCameraTarget: {fileID: 0}
+    m_Bits: 1
+  CinemachineCameraTarget: {fileID: 4135013735270702863}
   TopClamp: 90
   BottomClamp: -90
 --- !u!114 &1978471637655604388

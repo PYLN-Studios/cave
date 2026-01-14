@@ -165,6 +165,7 @@ public class NetworkManagerLobby : NetworkManager
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
         base.OnServerReady(conn);
+        Debug.Log($"OnServerReady called for connection: {conn.connectionId}");
         OnServerReadied?.Invoke(conn);
     }
 }
