@@ -92,19 +92,26 @@ namespace StarterAssets
 		}
 
 		private void Awake() {
+			Debug.Log("--- awake ---");
 			isLocal = isLocalPlayer;
 			if (!isLocalPlayer) {
-				SetInputEnabled(false);
+                SetInputEnabled(false);
 			}
 		}
 
-		private void SetInputEnabled(bool enabled) {
+        public override void OnStartClient() {
+            base.OnStartClient();
+        }
+
+        private void SetInputEnabled(bool enabled) {
 			// Helper for setting input state
+			Debug.Log($"----- _playerInput: {_playerInput}, _input: {_input} before, setting _playerInput and _input to {enabled} ----");
 #if ENABLE_INPUT_SYSTEM
 			if (_playerInput != null) { _playerInput.enabled = enabled; }
 #endif
 			if (_input != null) { _input.enabled = enabled; }
-		}
+            Debug.Log($"----- _playerInput: {_playerInput}, _input: {_input} after ----");
+        }
 
 		public override void OnStartLocalPlayer() {
 			Debug.Log("OnStartLocalPlayer called");
