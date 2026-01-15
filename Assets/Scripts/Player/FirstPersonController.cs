@@ -64,6 +64,9 @@ namespace StarterAssets
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
 
+		// debug
+		public bool isLocal;
+
 	
 #if ENABLE_INPUT_SYSTEM
 		private PlayerInput _playerInput;
@@ -88,7 +91,8 @@ namespace StarterAssets
 			}
 		}
 
-		public override void OnStartClient() {
+		private void Awake() {
+			isLocal = isLocalPlayer;
 			if (!isLocalPlayer) {
 				SetInputEnabled(false);
 			}
