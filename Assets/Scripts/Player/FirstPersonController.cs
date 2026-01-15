@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using Mirror;
 using UnityEngine.Rendering;
 
@@ -92,19 +92,51 @@ namespace StarterAssets
 		}
 
 		private void Awake() {
+			Debug.Log("--- awake ---");
 			isLocal = isLocalPlayer;
 			if (!isLocalPlayer) {
+                SetInputEnabled(false);
+			}
+		}
+
+        public override void OnStartClient()
+		{
+			base.OnStartClient();
+
+			_input = GetComponent<StarterAssetsInputs>();
+
+		#if ENABLE_INPUT_SYSTEM
+			_playerInput = GetComponent<PlayerInput>();
+		#endif
+
+			if (!isLocalPlayer)
+			{
 				SetInputEnabled(false);
 			}
 		}
 
-		private void SetInputEnabled(bool enabled) {
-			// Helper for setting input state
-#if ENABLE_INPUT_SYSTEM
-			if (_playerInput != null) { _playerInput.enabled = enabled; }
-#endif
-			if (_input != null) { _input.enabled = enabled; }
+
+        private void SetInputEnabled(bool enabled)
+		{
+		#if ENABLE_INPUT_SYSTEM
+			if (_playerInput != null)
+			{
+				_playerInput.enabled = enabled;
+
+				if (enabled)
+				{
+					_playerInput.neverAutoSwitchControlSchemes = true;
+					_playerInput.ActivateInput();
+				}
+			}
+		#endif
+
+			if (_input != null)
+			{
+				_input.enabled = enabled;
+			}
 		}
+
 
 		public override void OnStartLocalPlayer() {
 			Debug.Log("OnStartLocalPlayer called");
