@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
+using UnityEngine.Rendering;
+
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -86,6 +88,20 @@ namespace StarterAssets
 			}
 		}
 
+		public override void OnStartClient() {
+			if (!isLocalPlayer) {
+				SetInputEnabled(false);
+			}
+		}
+
+		private void SetInputEnabled(bool enabled) {
+			// Helper for setting input state
+#if ENABLE_INPUT_SYSTEM
+			if (_playerInput != null) { _playerInput.enabled = enabled; }
+#endif
+			if (_input != null) { _input.enabled = enabled; }
+		}
+
 		public override void OnStartLocalPlayer() {
 			Debug.Log("OnStartLocalPlayer called");
 
@@ -105,9 +121,8 @@ namespace StarterAssets
 
 #if ENABLE_INPUT_SYSTEM
 			_playerInput = GetComponent<PlayerInput>();
-			if (_playerInput != null)
-				_playerInput.enabled = true;
 #endif
+			SetInputEnabled(true);
 
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
