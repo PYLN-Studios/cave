@@ -289,7 +289,6 @@ namespace StarterAssets
 
 		private void JumpAndGravity()
 		{
-            Debug.Log($"Jump - Grounded: {Grounded}, _input.jump: {_input.jump}, _jumpTimeoutDelta: {_jumpTimeoutDelta}");
             if (Grounded)
 			{
 				// reset the fall timeout timer

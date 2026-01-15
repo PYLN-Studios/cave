@@ -37,6 +37,7 @@ public class PlayerNameInput : MonoBehaviour
 
         // Subscribe to input changes
         nameInputField.onValueChanged.AddListener(UpdateButtonStates);
+        nameInputField.onValueChanged.AddListener(SetPlayerName);
     }
 
     private void UpdateButtonStates(string name)

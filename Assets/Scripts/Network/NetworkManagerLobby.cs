@@ -104,13 +104,11 @@ public class NetworkManagerLobby : NetworkManager
 
     private bool IsReadyToStart()
     {
-        // TODO
-        //if (numPlayers < minPlayers) { return false; }
+        if (numPlayers < minPlayers) { return false; }
 
-        //foreach (var player in RoomPlayers)
-        //{
-        //    if (!player.IsReady) { return false; }
-        //}
+        foreach (var player in RoomPlayers) {
+            if (!player.IsReady) { return false; }
+        }
 
         return true;
     }
