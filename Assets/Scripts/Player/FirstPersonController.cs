@@ -86,87 +86,33 @@ namespace StarterAssets
 			}
 		}
 
-        public override void OnStartClient() {
+		public override void OnStartLocalPlayer() {
+			Debug.Log("OnStartLocalPlayer called");
 
-			if (isOwned && !isLocalPlayer) {
-				StartCoroutine(DelayedLocalPlayerSetup());
+			// Re-grab references just in case
+			_input = GetComponent<StarterAssetsInputs>();
+			_controller = GetComponent<CharacterController>();
+
+			if (_mainCamera == null) {
+				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
-        }
 
-        //DEBUG
-        private System.Collections.IEnumerator DelayedLocalPlayerSetup() {
-            yield return null; // Wait one frame
-
-            if (isOwned) {
-                SetupLocalPlayer();
-            }
-        }
-		// DEBUG 2
-        private void SetupLocalPlayer() {
-            Debug.Log("SetupLocalPlayer called");
-
-            _input = GetComponent<StarterAssetsInputs>();
-            _controller = GetComponent<CharacterController>();
-
-            Debug.Log($"_input: {(_input == null ? "NULL" : "assigned")}");
-            Debug.Log($"_controller: {(_controller == null ? "NULL" : "assigned")}");
-
-            if (_mainCamera == null) {
-                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-            }
-
-            var vcam = FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
-            Debug.Log($"vcam: {(vcam == null ? "NULL" : vcam.name)}");
-            Debug.Log($"CinemachineCameraTarget: {(CinemachineCameraTarget == null ? "NULL" : CinemachineCameraTarget.name)}");
-
-            if (vcam != null && CinemachineCameraTarget != null) {
-                vcam.Follow = CinemachineCameraTarget.transform;
-            }
+			// Find Cinemachine and set follow target
+			var vcam = FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
+			if (vcam != null && CinemachineCameraTarget != null) {
+				vcam.Follow = CinemachineCameraTarget.transform;
+			}
 
 #if ENABLE_INPUT_SYSTEM
-            _playerInput = GetComponent<PlayerInput>();
-            if (_playerInput != null) {
-                _playerInput.enabled = true;
-                Debug.Log($"_playerInput.enabled after setting: {_playerInput.enabled}");
-            }
-                
+			_playerInput = GetComponent<PlayerInput>();
+			if (_playerInput != null)
+				_playerInput.enabled = true;
 #endif
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
-        public override void OnStartLocalPlayer() {
-            Debug.Log("OnStartLocalPlayer called!");
-            SetupLocalPlayer();
-        }
-   //     public override void OnStartLocalPlayer() {
-   //         Debug.Log("OnStartLocalPlayer called");
-
-   //         // Re-grab references just in case
-   //         _input = GetComponent<StarterAssetsInputs>();
-   //         _controller = GetComponent<CharacterController>();
-
-   //         if (_mainCamera == null) {
-   //             _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-   //         }
-
-   //         // Find Cinemachine and set follow target
-   //         var vcam = FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
-   //         if (vcam != null && CinemachineCameraTarget != null) {
-   //             vcam.Follow = CinemachineCameraTarget.transform;
-   //         }
-
-			//#if ENABLE_INPUT_SYSTEM
-   //         _playerInput = GetComponent<PlayerInput>();
-   //         if (_playerInput != null)
-   //             _playerInput.enabled = true;
-			//#endif
-
-   //         Cursor.lockState = CursorLockMode.Locked;
-   //         Cursor.visible = false;
-   //     }
-        private void Start()
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
+		}
+		private void Start()
 		{
 			Debug.Log("start called ----------------");
 			_controller = GetComponent<CharacterController>();
@@ -196,7 +142,7 @@ namespace StarterAssets
 		{
             if (!isLocalPlayer) return;
 			if (_input == null) return;
-            //Debug.Log($"_input.move: {_input.move} _playerInput.enabled: {_playerInput.enabled}");
+            Debug.Log($"_input.move: {_input.move} _playerInput.enabled: {_playerInput.enabled} isLocalPlayer: {isLocalPlayer}");
             JumpAndGravity();
 			GroundedCheck();
 			Move();
