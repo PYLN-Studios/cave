@@ -64,9 +64,6 @@ namespace StarterAssets
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
 
-		// debug
-		public bool isLocal;
-
 	
 #if ENABLE_INPUT_SYSTEM
 		private PlayerInput _playerInput;
@@ -157,7 +154,6 @@ namespace StarterAssets
 		}
 		private void Start()
 		{
-			Debug.Log("start called ----------------");
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
 
@@ -185,7 +181,7 @@ namespace StarterAssets
 		{
             if (!isLocalPlayer) return;
 			if (_input == null) return;
-            Debug.Log($"_input.move: {_input.move} _playerInput.enabled: {_playerInput.enabled} isLocalPlayer: {isLocalPlayer}");
+            // Debug.Log($"_input.move: {_input.move} _playerInput.enabled: {_playerInput.enabled} isLocalPlayer: {isLocalPlayer}");
             JumpAndGravity();
 			GroundedCheck();
 			Move();
