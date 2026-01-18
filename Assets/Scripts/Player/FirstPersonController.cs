@@ -15,7 +15,7 @@ namespace StarterAssets
 		[Tooltip("Move speed of the character in m/s")]
 		public float MoveSpeed = 4.0f;
 		[Tooltip("Sprint speed of the character in m/s")]
-		public float SprintSpeed = 6.0f;
+		public float SprintSpeed = 8.0f;
 		[Tooltip("Rotation speed of the character")]
 		public float RotationSpeed = 1.0f;
 		[Tooltip("Acceleration and deceleration")]
@@ -59,6 +59,13 @@ namespace StarterAssets
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
+
+		// player state
+		private bool _isSprinting;
+
+		// camera stats
+		private float _normalFOV = 62f;
+		private float _sprintFOV = 65f;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -192,6 +199,7 @@ namespace StarterAssets
             if (!isLocalPlayer) return;
             if (_input == null) return;
             CameraRotation();
+			CameraFOV();
 		}
 
 		private void GroundedCheck()
@@ -225,10 +233,29 @@ namespace StarterAssets
 			}
 		}
 
-		private void Move()
+		private void CameraFOV()
+		{
+            var vcam = FindAnyObjectByType<Unity.Cinemachine.CinemachineCamera>();
+            if (vcam == null)
+				return;
+			float targetFOV = _isSprinting ? _sprintFOV : _normalFOV;
+			
+			vcam.Lens.FieldOfView = Mathf.Lerp(vcam.Lens.FieldOfView, targetFOV, Time.deltaTime * 10f);
+        }
+
+        private void Move()
 		{
 			// set target speed based on move speed, sprint speed and if sprint is pressed
 			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+
+			if (_input.sprint)
+			{
+				_isSprinting = true;
+            }
+			else
+            {
+				_isSprinting = false;
+			}
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
