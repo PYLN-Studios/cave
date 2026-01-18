@@ -226,7 +226,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   MoveSpeed: 4
-  SprintSpeed: 6
+  SprintSpeed: 7
   RotationSpeed: 1
   SpeedChangeRate: 10
   JumpHeight: 1.2
