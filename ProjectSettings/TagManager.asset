@@ -8,6 +8,7 @@ TagManager:
   - SpawnPoint
   - Projectile
   - Entity
+  - Ground
   layers:
   - Default
   - TransparentFX

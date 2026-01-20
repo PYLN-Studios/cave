@@ -13,13 +13,13 @@ namespace Projectiles
 
         public static SpearData Default => new SpearData
         {
-            speed = 25f,
-            lifetime = 20f,
+            speed = 15f,
+            lifetime = 15f,
             damage = 50f,
             weight = 1.2f,
             drag = 0f,
             playerDamageMultiplier = 2.1f, // set very high for testing, todo revert to 0.7
-            lingerDuration = 60f
+            lingerDuration = 20f
         };
     }
 }

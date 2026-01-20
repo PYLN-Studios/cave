@@ -28,8 +28,6 @@ namespace Player
         [Header("Projectile Settings")]
         [Tooltip("Spear prefab to spawn")]
         public GameObject spearPrefab;
-        [Tooltip("Where the spear spawns from")]
-        public Transform spawnPoint;
 
 #if ENABLE_INPUT_SYSTEM
         private PlayerInput _playerInput;
@@ -107,11 +105,6 @@ namespace Player
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
-            // Set spawn point to camera if not set
-            if (spawnPoint == null && _mainCamera != null)
-            {
-                spawnPoint = _mainCamera.transform;
-            }
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -183,11 +176,11 @@ namespace Player
             //Debug.Log("CmdSpawnProjectile called on server");
 
             // Get spawn position and rotation
-            Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position + transform.forward;
-            Quaternion spawnRotation = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
+            Vector3 spawnPosition = _mainCamera.transform.position + _mainCamera.transform.forward;
+            Quaternion spawnRotation = _mainCamera.transform.rotation;
 
             // Instantiate the spear
-            GameObject newProjectile = Instantiate(spearPrefab) as GameObject;
+            GameObject newProjectile = Instantiate(spearPrefab, spawnPosition, spawnRotation) as GameObject;
 
             // Get SpearData defaults
             SpearData data = SpearData.Default;
@@ -196,7 +189,6 @@ namespace Player
             BasicProjectile basicProjectile = newProjectile.GetComponent<BasicProjectile>();
             if (basicProjectile != null)
             {
-                Debug.Log($"projectile initialized with damage {data.damage}");
                 basicProjectile.Initialize(
                     spawnPosition,
                     data.speed,
@@ -209,7 +201,6 @@ namespace Player
                     lingerDuration: data.lingerDuration
                 );
                 basicProjectile.creator = this.gameObject;
-                Debug.Log($"projectile initialized with damage {data.damage}");
             }
             else
             {
@@ -219,6 +210,7 @@ namespace Player
             NetworkServer.Spawn(newProjectile);
         }
 
+        [Server]
         public void ApplyDamage(float damage)
         {
             Debug.Log($"Player {name} took {damage} damage.");

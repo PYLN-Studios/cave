@@ -63,6 +63,7 @@ namespace Projectiles
         }
 
         // Update is called once per frame
+        [Server]
         void Update()
         {
             if (!isAlive)
@@ -84,11 +85,16 @@ namespace Projectiles
                 transform.position += velocity * Time.deltaTime;
                 Vector3 gravity = Physics.gravity * (1f - weight) * Time.deltaTime;
                 this.velocity.y += gravity.y;
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, angle, weight * 90f * Time.deltaTime);
+                // Rotate to face the direction of velocity
+                if (velocity.sqrMagnitude > 0.01f)
+                {
+                    transform.rotation = Quaternion.LookRotation(velocity);
+                }
             }
         }
 
         // Check for collision
+        [Server]
         void OnTriggerEnter(Collider other)
         {
             if (!isAlive) return;

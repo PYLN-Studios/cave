@@ -6,7 +6,7 @@ namespace Enemies
 {
 
     [RequireComponent(typeof(CharacterController))]
-    public class NonPlayerEntity : MonoBehaviour
+    public class NonPlayerEntity : NetworkBehaviour
     {
 
         [Header("Enemy")]
@@ -29,6 +29,7 @@ namespace Enemies
         }
 
         // Update is called once per frame
+        [Server]
         void Update()
         {
             randomMoveTimer -= Time.deltaTime;
@@ -44,6 +45,7 @@ namespace Enemies
             transform.position += moveVelocity * Time.deltaTime;
         }
 
+        [Server]
         public void ApplyDamage(float damage)
         {
             currHealth -= damage;

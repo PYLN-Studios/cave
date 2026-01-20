@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10.93, y: -3.01226, z: 11.457}
-  m_LocalScale: {x: 2, y: 0.08, z: 0.08}
+  m_LocalScale: {x: 0.08, y: 0.08, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -130,6 +130,14 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  damage: 0
+  playerDamageMultiplier: 0
+  duration: 0
+  lingerDuration: 0
+  aliveTime: 0
+  isAlive: 1
+  lingerTime: 0
+  creator: {fileID: 0}
 --- !u!114 &4102984666116220024
 MonoBehaviour:
   m_ObjectHideFlags: 0
