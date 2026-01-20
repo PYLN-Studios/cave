@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Mirror;
 using UnityEngine.Rendering;
+using UnityEngine.SoundManager;
 
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -70,6 +71,16 @@ namespace StarterAssets
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
+
+		// footsteps
+		[Header("Footsteps")]
+		[SerializeField] private float walkStepInterval = 0.5f;
+		[SerializeField] private float sprintStepInterval = 0.35f;
+		[SerializeField] private float footstepVolume = 1f;
+		[SerializeField] private float footstepMinDistance = 1.5f;
+		[SerializeField] private float footstepMaxDistance = 20f;
+
+private float _footstepTimer;
 
 	
 #if ENABLE_INPUT_SYSTEM
@@ -192,6 +203,8 @@ namespace StarterAssets
             JumpAndGravity();
 			GroundedCheck();
 			Move();
+			HandleFootsteps();
+
 		}
 
 		private void LateUpdate()
@@ -365,5 +378,67 @@ namespace StarterAssets
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
 		}
+
+		// Handle footstep sounds
+		private void HandleFootsteps()
+		{
+			if (!Grounded) return;
+
+			// Only count steps when actually moving on the ground
+			Vector3 horizontalVel = new Vector3(_controller.velocity.x, 0f, _controller.velocity.z);
+			if (horizontalVel.sqrMagnitude < 0.05f) return;
+
+			float interval;
+			if (_input != null && _input.sprint)
+				interval = sprintStepInterval;
+			else
+				interval = walkStepInterval;
+
+			_footstepTimer -= Time.deltaTime;
+			if (_footstepTimer > 0f) return;
+
+			PlayFootstepLocalAndNetwork();
+			_footstepTimer = interval;
+		}
+
+		// Play footstep sound locally and on network
+		private void PlayFootstepLocalAndNetwork()
+		{
+			Vector3 pos = transform.position;
+
+			// Play instantly for the local player to avoid latency
+			SoundManager.Play3D(
+				SoundType.PLAYERFOOTSTEP,
+				pos,
+				footstepVolume,
+				minDistance: footstepMinDistance,
+				maxDistance: footstepMaxDistance
+			);
+
+			// Call server to play for other clients
+			CmdPlayFootstep(pos);
+		}
+
+		[Command(channel = Channels.Unreliable)]
+		private void CmdPlayFootstep(Vector3 worldPos)
+		{
+			RpcPlayFootstep(worldPos);
+		}
+
+		[ClientRpc(channel = Channels.Unreliable)]
+		private void RpcPlayFootstep(Vector3 worldPos)
+		{
+			// Don't play on local player, already played instantly
+			if (isLocalPlayer) return;
+
+			SoundManager.Play3D(
+				SoundType.PLAYERFOOTSTEP,
+				worldPos,
+				footstepVolume,
+				minDistance: footstepMinDistance,
+				maxDistance: footstepMaxDistance
+			);
+		}
+
 	}
 }
