@@ -6,9 +6,7 @@ namespace UnityEngine.SoundManager
     public enum SoundType
     {
         PLAYERFOOTSTEP,
-        MAMMOTHFOOTSTEP,
-        PAPAKAKAKA,
-        DEAGLECSGO
+        MAMMOTHFOOTSTEP
     }
 
     public class SoundManager : MonoBehaviour

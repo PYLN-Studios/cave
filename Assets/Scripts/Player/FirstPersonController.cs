@@ -408,7 +408,7 @@ private float _footstepTimer;
 
 			// Play instantly for the local player to avoid latency
 			SoundManager.Play3D(
-				SoundType.PAPAKAKAKA,
+				SoundType.PLAYERFOOTSTEP,
 				pos,
 				footstepVolume,
 				minDistance: footstepMinDistance,
@@ -432,7 +432,7 @@ private float _footstepTimer;
 			if (isLocalPlayer) return;
 
 			SoundManager.Play3D(
-				SoundType.PAPAKAKAKA,
+				SoundType.PLAYERFOOTSTEP,
 				worldPos,
 				footstepVolume,
 				minDistance: footstepMinDistance,
