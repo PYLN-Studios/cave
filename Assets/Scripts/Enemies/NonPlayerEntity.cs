@@ -46,7 +46,7 @@ namespace Enemies
 
         public void ApplyDamage(float damage)
         {
-            Debug.Log($"Enemy took {damage} damage.");
+            Debug.Log($"Enemy took {damage} damage. Health: {currHealth}/{maxHealth}");
             currHealth -= damage;
             if (currHealth <= 0f)
             {

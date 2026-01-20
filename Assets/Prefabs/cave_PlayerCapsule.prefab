@@ -255,6 +255,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e6a8d92056aee14db619844e19348e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatScript
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  currHealth: 100
+  maxHealth: 100
+  weaponName: Spear
+  rateOfFire: 1
+  currCooldown: 0
+  spearPrefab: {fileID: 7189551588235009149, guid: cc8d34f4e8697024596bba030025d1f9, type: 3}
+  spawnPoint: {fileID: 0}
 --- !u!114 &1978471637655604388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,6 +298,7 @@ MonoBehaviour:
   look: {x: 0, y: 0}
   jump: 0
   sprint: 0
+  attack: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1

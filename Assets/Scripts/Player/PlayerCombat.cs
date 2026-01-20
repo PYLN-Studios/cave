@@ -40,7 +40,7 @@ namespace Player
 
         private const float _threshold = 0.01f;
 
-        // Quality of life
+        // Quality of life: don't clear the attack action if its done when almost ready
         private float attackInputBufferTime = 0.2f;
 
         public void ApplyDamage(float damage)
@@ -121,9 +121,10 @@ namespace Player
             _input = GetComponent<StarterAssetsInputs>();
 
             // Load weapon prefab if not set
+            // TODO this doesnt work, try using Addressable Asset System
             if (spearPrefab == null)
             {
-                spearPrefab = Resources.Load<GameObject>("Assets/Prefabs/Projectiles/Spear");
+                spearPrefab = Resources.Load<GameObject>("Prefabs/Projectiles/Spear");
                 if (spearPrefab == null)
                 {
                     Debug.LogError("Failed to load spear prefab from Resources. Make sure it's at Assets/Resources/Prefabs/Projectiles/Spear.prefab");
@@ -147,10 +148,11 @@ namespace Player
                 if (currCooldown <= 0f)
                 {
                     Debug.Log("Player attack input detected");
-                    //CmdThrowSpear();
+                    CmdThrowSpear();
                     currCooldown = 1f / rateOfFire;
                 }
 
+                // input buffering
                 if (currCooldown >= attackInputBufferTime)
                 {
                     _input.attack = false;
@@ -161,9 +163,18 @@ namespace Player
         [Command]
         void CmdThrowSpear()
         {
+            Debug.Log("is server? " + isServer);
+
             if (spearPrefab == null)
             {
                 Debug.LogError("Spear prefab is not assigned!");
+                return;
+            }
+
+            // Verify the prefab has NetworkIdentity
+            if (spearPrefab.GetComponent<NetworkIdentity>() == null)
+            {
+                Debug.LogError("Spear prefab must have a NetworkIdentity component!");
                 return;
             }
 
@@ -172,7 +183,7 @@ namespace Player
             Quaternion spawnRotation = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
 
             // Instantiate the spear
-            GameObject spear = Instantiate(spearPrefab, spawnPosition, spawnRotation);
+            GameObject spear = Instantiate(spearPrefab) as GameObject;
 
             // Get SpearData defaults
             SpearData data = SpearData.Default;
@@ -181,13 +192,28 @@ namespace Player
             BasicProjectile projectile = spear.GetComponent<BasicProjectile>();
             if (projectile != null)
             {
+                //projectile.Initialize(
+                //    spawnPosition,
+                //    data.speed,
+                //    spawnRotation,
+                //    data.lifetime,
+                //    data.damage,
+                //    data.weight,
+                //    data.drag,
+                //    data.playerDamageMultiplier,
+                //    data.lingerTime
+                //);
+                Vector3 testSpawnPoint = Vector3.zero;
+                testSpawnPoint.x = 5f;
+                testSpawnPoint.y = 5f;
+                testSpawnPoint.z = 5f;
                 projectile.Initialize(
-                    spawnPosition,
-                    data.speed,
-                    spawnRotation,
+                    testSpawnPoint,
+                    1f,
+                    Quaternion.identity,
                     data.lifetime,
                     data.damage,
-                    data.weight,
+                    0.01f,
                     data.drag,
                     data.playerDamageMultiplier,
                     data.lingerTime
@@ -198,8 +224,14 @@ namespace Player
                 Debug.LogError("Spear prefab does not have BasicProjectile component!");
             }
 
+            if (spear)
+            {
+                Debug.Log("spear is spear");
+            }
+
             // Spawn on network
             NetworkServer.Spawn(spear);
+            Debug.Log("Spear spawned on network");
         }
 
         void Die()
