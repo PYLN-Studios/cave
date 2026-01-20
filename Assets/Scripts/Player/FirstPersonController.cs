@@ -399,6 +399,9 @@ namespace StarterAssets
 			if (footstepTimer > 0f)
 				return;
 			
+			Debug.Log($"FOOTSTEP: grounded={Grounded} move={_input.move} sprint={_input.sprint} pos={transform.position}");
+
+
 			UnityEngine.SoundManager.SoundManager.Play3D(
 				UnityEngine.SoundManager.SoundType.PAPAKAKAKA,
 				transform.position, footstepVolume);
