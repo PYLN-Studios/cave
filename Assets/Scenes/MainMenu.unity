@@ -528,9 +528,12 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
+  - {fileID: 8616685848737228372, guid: 6b296e0747db76e4d9a88d9036ea7923, type: 3}
   - {fileID: 259467445546674460, guid: da31246df5106724b98ebc98004e729c, type: 3}
+  - {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
   - {fileID: 367161713768272800, guid: 511c534bf6714ad47a39a36dfc31266b, type: 3}
   - {fileID: 5971912759427419159, guid: 5977f6d14d055964bbaef23cc0a0b1fc, type: 3}
+  - {fileID: 7189551588235009149, guid: cc8d34f4e8697024596bba030025d1f9, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -593,7 +596,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1575070477}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6e55fca1f4e4844593a3dd65a3ecb39, type: 3}
   m_Name: 
@@ -609,7 +612,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1575070477}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef4bffeda13d7a748973ff9204401c07, type: 3}
   m_Name: 
