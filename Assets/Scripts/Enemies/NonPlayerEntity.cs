@@ -6,7 +6,7 @@ namespace Enemies
 {
 
     [RequireComponent(typeof(CharacterController))]
-    public class NonPlayerEntity : NetworkBehaviour
+    public class NonPlayerEntity : MonoBehaviour
     {
 
         [Header("Enemy")]
@@ -46,8 +46,8 @@ namespace Enemies
 
         public void ApplyDamage(float damage)
         {
-            Debug.Log($"Enemy took {damage} damage. Health: {currHealth}/{maxHealth}");
             currHealth -= damage;
+            Debug.Log($"Enemy took {damage} damage. Health: {currHealth}/{maxHealth}");
             if (currHealth <= 0f)
             {
                 Die();

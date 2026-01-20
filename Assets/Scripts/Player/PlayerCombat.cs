@@ -38,14 +38,15 @@ namespace Player
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
 
-        //private MainGameWorldNetworkManager _worldNetworkManager
-        //{
-        //    get
-        //    {
-        //        if (_worldNetworkManager != null) { return _worldNetworkManager; }
-        //        return _worldNetworkManager = NetworkManager.singleton as MainGameWorldNetworkManager;
-        //    }
-        //}
+        private MainGameWorldNetworkManager world;
+        private MainGameWorldNetworkManager World
+        {
+            get
+            {
+                if (world != null) { return world; }
+                return world = MainGameWorldNetworkManager.singleton as MainGameWorldNetworkManager;
+            }
+        }
 
         private const float _threshold = 0.01f;
 
@@ -139,6 +140,7 @@ namespace Player
                     Debug.LogError("Failed to load spear prefab from Resources. Make sure it's at Assets/Resources/Prefabs/Projectiles/Spear.prefab");
                 }
             }
+            //NetworkClient.RegisterPrefab(spearPrefab, SpawnProjectile, UnSpawnProjectile);
         }
 
         [Client]
@@ -157,7 +159,7 @@ namespace Player
                 if (currCooldown <= 0f)
                 {
                     Debug.Log("Player attack input detected");
-                    CmdThrowSpear();
+                    CmdSpawnProjectile();
                     currCooldown = 1f / rateOfFire;
                 }
 
@@ -169,76 +171,62 @@ namespace Player
             }
         }
 
-        void CmdThrowSpear()
+        //// Used by NetworkClient.RegisterPrefab
+        //GameObject SpawnProjectile(Vector3 position, uint assetId)
+        //{
+        //    Debug.Log("Spawning projectile with assetId: " + assetId);
+
+        //    return newProjectile;
+        //}
+
+        //// Used by NetworkClient.RegisterPrefab
+        //void UnSpawnProjectile(GameObject spawned)
+        //{
+        //    Debug.Log("Unspawning projectile" + spawned.name);
+        //    Destroy(spawned);
+        //}
+
+        // [Command] functions are called on the client but executed on the server
+        [Command]
+        void CmdSpawnProjectile()
         {
-            Debug.Log("is server? " + isServer);
-
-            if (spearPrefab == null)
-            {
-                Debug.LogError("Spear prefab is not assigned!");
-                return;
-            }
-
-            // Verify the prefab has NetworkIdentity
-            if (spearPrefab.GetComponent<NetworkIdentity>() == null)
-            {
-                Debug.LogError("Spear prefab must have a NetworkIdentity component!");
-                return;
-            }
+            //Debug.Log("CmdSpawnProjectile called on server");
 
             // Get spawn position and rotation
             Vector3 spawnPosition = spawnPoint != null ? spawnPoint.position : transform.position + transform.forward;
             Quaternion spawnRotation = spawnPoint != null ? spawnPoint.rotation : transform.rotation;
 
             // Instantiate the spear
-            GameObject spear = Instantiate(spearPrefab) as GameObject;
+            GameObject newProjectile = Instantiate(spearPrefab) as GameObject;
 
             // Get SpearData defaults
             SpearData data = SpearData.Default;
 
             // Initialize the spear with data
-            BasicProjectile projectile = spear.GetComponent<BasicProjectile>();
-            if (projectile != null)
+            BasicProjectile basicProjectile = newProjectile.GetComponent<BasicProjectile>();
+            if (basicProjectile != null)
             {
-                //projectile.Initialize(
-                //    spawnPosition,
-                //    data.speed,
-                //    spawnRotation,
-                //    data.lifetime,
-                //    data.damage,
-                //    data.weight,
-                //    data.drag,
-                //    data.playerDamageMultiplier,
-                //    data.lingerTime
-                //);
-                Vector3 testSpawnPoint = Vector3.zero;
-                testSpawnPoint.x = 5f;
-                testSpawnPoint.y = 5f;
-                testSpawnPoint.z = 5f;
-                projectile.Initialize(
-                    testSpawnPoint,
-                    1f,
-                    Quaternion.identity,
+                Debug.Log($"projectile initialized with damage {data.damage}");
+                basicProjectile.Initialize(
+                    spawnPosition,
+                    data.speed,
+                    spawnRotation,
                     data.lifetime,
-                    data.damage,
-                    0.01f,
-                    data.drag,
-                    data.playerDamageMultiplier,
-                    data.lingerTime
+                    damage: data.damage,
+                    weight: 0.1f,
+                    drag: data.drag,
+                    playerDamageMultiplier: data.playerDamageMultiplier,
+                    lingerDuration: data.lingerDuration
                 );
+                basicProjectile.creator = this.gameObject;
+                Debug.Log($"projectile initialized with damage {data.damage}");
             }
             else
             {
                 Debug.LogError("Spear prefab does not have BasicProjectile component!");
             }
 
-            if (spear)
-            {
-                Debug.Log("spear is spear");
-            }
-
-            // Spawn on network
-            
+            NetworkServer.Spawn(newProjectile);
         }
 
         void Die()
@@ -249,6 +237,11 @@ namespace Player
             Debug.Log($"Player died, resetting HP");
             transform.position += new Vector3(0f, 2f, 0f);
             currHealth = maxHealth;
+        }
+
+        void OnDestroy()
+        {
+            NetworkClient.UnregisterPrefab(spearPrefab);
         }
     }
 }

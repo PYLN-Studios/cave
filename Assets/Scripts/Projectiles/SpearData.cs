@@ -9,7 +9,7 @@ namespace Projectiles
         public float weight;
         public float drag;
         public float playerDamageMultiplier;
-        public float lingerTime;
+        public float lingerDuration;
 
         public static SpearData Default => new SpearData
         {
@@ -18,8 +18,8 @@ namespace Projectiles
             damage = 50f,
             weight = 1.2f,
             drag = 0f,
-            playerDamageMultiplier = 0.7f,
-            lingerTime = 60f
+            playerDamageMultiplier = 2.1f, // set very high for testing, todo revert to 0.7
+            lingerDuration = 60f
         };
     }
 }

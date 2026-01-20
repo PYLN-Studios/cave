@@ -14,17 +14,20 @@ namespace Projectiles
         private float drag;    // how much the projectile is slowed by air resistance
 
         // combat params
-        private float damage;
-        private float playerDamageMultiplier;
+        [SerializeField] private float damage;
+        [SerializeField] private float playerDamageMultiplier;
 
         // lifetime
-        private float duration;
-        private float lingerDuration; // set to 0 to destroy on impact
+        [SerializeField] private float duration;
+        [SerializeField] private float lingerDuration; // set to 0 to destroy on impact
 
         // keep track of projectile lifetime and state
-        private float aliveTime;
-        private bool isAlive;
-        private float lingerTime;
+        [SerializeField] private float aliveTime = 0f;
+        [SerializeField] private bool isAlive = true;
+        [SerializeField] private float lingerTime = 0f;
+
+        // projectile should not shoot self during the first few seconds
+        public GameObject creator;
 
         // Initialize the projectile with parameters
         public void Initialize(
@@ -36,23 +39,26 @@ namespace Projectiles
             float weight = 1f,
             float drag = 0f,
             float playerDamageMultiplier = 1f,
-            float lingerTime = 0f
+            float lingerDuration = 0f
             )
         {
             transform.position = position;
             this.velocity = angle * Vector3.forward * speed;
             this.angle = angle;
             this.duration = lifetime;
-            this.damage = damage = 0f;
+            this.damage = damage;
             this.weight = weight;
             this.drag = drag;
             this.playerDamageMultiplier = playerDamageMultiplier;
-            this.lingerTime = lingerTime;
+            this.lingerDuration = lingerDuration;
+
+            //Debug.Log($"projectile initialized with position {transform.position} and velocity {this.velocity}");
         }
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
+            Debug.Log("projectile started!");
         }
 
         // Update is called once per frame
@@ -65,13 +71,20 @@ namespace Projectiles
                 {
                     Destroy(gameObject);
                 }
+            } 
+            else
+            {
+                aliveTime += Time.deltaTime;
+                if (aliveTime >= duration)
+                {
+                    Destroy(gameObject);
+                }
+                // Move the projectile forward, then apply gravity and angle it
+                transform.position += velocity * Time.deltaTime;
+                Vector3 gravity = Physics.gravity * (1f - weight) * Time.deltaTime;
+                this.velocity.y += gravity.y;
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, angle, weight * 90f * Time.deltaTime);
             }
-
-            // Move the projectile forward, then apply gravity and angle it
-            transform.position += velocity * Time.deltaTime;
-            Vector3 gravity = Physics.gravity * (1f - weight) * Time.deltaTime;
-            this.velocity.y += gravity.y;
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, angle, weight * 90f * Time.deltaTime);
         }
 
         // Check for collision
@@ -91,6 +104,12 @@ namespace Projectiles
             // check if it hits another player
             else if (other.gameObject.CompareTag("Player"))
             {
+                if (other.gameObject == creator
+                    && aliveTime < 1f) // ignore self-hit for first second
+                {
+                    return;
+                }
+
                 // TODO apply damage to player
                 // PlayerController player = other.gameObject.GetComponent<PlayerController>();
                 // player.ApplyDamage(damage * playerDamageMultiplier);
@@ -102,19 +121,17 @@ namespace Projectiles
                 // TODO probably have it ragdoll
             }
 
+            isAlive = false;
             if (lingerDuration > 0f)
             {
-                isAlive = false;
                 this.lingerTime = 0f;
                 // attach itself to whatever it hit, if it moves
-                // move forward by a small amount to make it look like its stuck
                 Collider m_Collider = GetComponent<Collider>();
-                transform.position += velocity.normalized * m_Collider.bounds.size.x;
                 transform.SetParent(other.transform);
             }
             else
             {
-                //Destroy(gameObject);
+                Destroy(gameObject);
             }
         }
     }
