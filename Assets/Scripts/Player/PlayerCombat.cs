@@ -38,6 +38,15 @@ namespace Player
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
 
+        //private MainGameWorldNetworkManager _worldNetworkManager
+        //{
+        //    get
+        //    {
+        //        if (_worldNetworkManager != null) { return _worldNetworkManager; }
+        //        return _worldNetworkManager = NetworkManager.singleton as MainGameWorldNetworkManager;
+        //    }
+        //}
+
         private const float _threshold = 0.01f;
 
         // Quality of life: don't clear the attack action if its done when almost ready
@@ -160,7 +169,6 @@ namespace Player
             }
         }
 
-        [Command]
         void CmdThrowSpear()
         {
             Debug.Log("is server? " + isServer);
@@ -230,8 +238,7 @@ namespace Player
             }
 
             // Spawn on network
-            NetworkServer.Spawn(spear);
-            Debug.Log("Spear spawned on network");
+            
         }
 
         void Die()
