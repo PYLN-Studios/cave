@@ -1,6 +1,7 @@
 using Enemies;
 using Mirror;
 using UnityEngine;
+using Player;
 
 
 namespace Projectiles
@@ -110,9 +111,9 @@ namespace Projectiles
                     return;
                 }
 
-                // TODO apply damage to player
-                // PlayerController player = other.gameObject.GetComponent<PlayerController>();
-                // player.ApplyDamage(damage * playerDamageMultiplier);
+                //TODO apply damage to player
+                PlayerCombat player = other.gameObject.GetComponent<PlayerCombat>();
+                player.ApplyDamage(damage * playerDamageMultiplier);
             }
             // check if it hit the ground
             else if (other.gameObject.CompareTag("Ground"))

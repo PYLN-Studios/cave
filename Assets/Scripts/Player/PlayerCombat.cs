@@ -11,7 +11,7 @@ using UnityEngine.InputSystem;
 
 namespace Player
 {
-    public class CombatScript : NetworkBehaviour
+    public class PlayerCombat : NetworkBehaviour
     {
         // TODO eventually we probably want to make players and enemies inherit from the same class
 
@@ -52,16 +52,6 @@ namespace Player
 
         // Quality of life: don't clear the attack action if its done when almost ready
         private float attackInputBufferTime = 0.2f;
-
-        public void ApplyDamage(float damage)
-        {
-            Debug.Log($"Player took {damage} damage.");
-            currHealth -= damage;
-            if (currHealth <= 0f)
-            {
-                Die();
-            }
-        }
 
         public override void OnStartClient()
         {
@@ -229,13 +219,23 @@ namespace Player
             NetworkServer.Spawn(newProjectile);
         }
 
+        public void ApplyDamage(float damage)
+        {
+            Debug.Log($"Player {name} took {damage} damage.");
+            currHealth -= damage;
+            if (currHealth <= 0f)
+            {
+                Die();
+            }
+        }
+
         void Die()
         {
             // Eventually do something here, for now just set health back
             //Destroy(gameObject);
 
             Debug.Log($"Player died, resetting HP");
-            transform.position += new Vector3(0f, 2f, 0f);
+            transform.position += new Vector3(0f, 5f, 0f);
             currHealth = maxHealth;
         }
 
