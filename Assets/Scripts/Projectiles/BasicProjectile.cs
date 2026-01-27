@@ -63,15 +63,20 @@ namespace Projectiles
         }
 
         // Update is called once per frame
-        [Server]
+        [ServerCallback]
         void Update()
         {
+            if (!isServer)
+            {
+                return;
+            }
+
             if (!isAlive)
             {
                 this.lingerTime += Time.deltaTime;
                 if (this.lingerTime >= this.lingerDuration)
                 {
-                    Destroy(gameObject);
+                    NetworkServer.Destroy(gameObject);
                 }
             } 
             else
@@ -94,10 +99,13 @@ namespace Projectiles
         }
 
         // Check for collision
-        [Server]
+        [ServerCallback]
         void OnTriggerEnter(Collider other)
         {
-            if (!isAlive) return;
+            if (!isServer || !isAlive)
+            {
+                return;
+            }
             if (other.gameObject.CompareTag("Projectile")) return; // ignore other projectiles
 
             Debug.Log($"Projectile hit {other.gameObject.name}");
@@ -117,7 +125,6 @@ namespace Projectiles
                     return;
                 }
 
-                //TODO apply damage to player
                 PlayerCombat player = other.gameObject.GetComponent<PlayerCombat>();
                 player.ApplyDamage(damage * playerDamageMultiplier);
             }
@@ -138,7 +145,7 @@ namespace Projectiles
             }
             else
             {
-                Destroy(gameObject);
+                NetworkServer.Destroy(gameObject);
             }
         }
     }

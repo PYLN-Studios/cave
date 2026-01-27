@@ -3,6 +3,8 @@ using StarterAssets;
 using UnityEngine;
 using UnityEngine.Windows;
 using Projectiles;
+using UnityEngine.Splines;
+
 
 
 #if ENABLE_INPUT_SYSTEM
@@ -17,7 +19,7 @@ namespace Player
 
         [Header("Player Defensive Stats")]
         [Tooltip("Health")]
-        public float currHealth = 100f;
+        [SyncVar] public float currHealth = 100f;
         public float maxHealth = 100f;
 
         [Header("Player Offensive Stats")]
@@ -28,6 +30,9 @@ namespace Player
         [Header("Projectile Settings")]
         [Tooltip("Spear prefab to spawn")]
         public GameObject spearPrefab;
+
+        [Header("Player State")]
+        [SyncVar] public bool isAlive = true;
 
 #if ENABLE_INPUT_SYSTEM
         private PlayerInput _playerInput;
@@ -50,6 +55,8 @@ namespace Player
 
         // Quality of life: don't clear the attack action if its done when almost ready
         private float attackInputBufferTime = 0.2f;
+
+        private uint projectileGuid;
 
         public override void OnStartClient()
         {
@@ -123,7 +130,11 @@ namespace Player
                     Debug.LogError("Failed to load spear prefab from Resources. Make sure it's at Assets/Resources/Prefabs/Projectiles/Spear.prefab");
                 }
             }
-            //NetworkClient.RegisterPrefab(spearPrefab, SpawnProjectile, UnSpawnProjectile);
+            //System.Guid projectileAssetGuid = System.Guid.NewGuid();
+            //projectileGuid = NetworkIdentity.AssetGuidToUint(projectileAssetGuid);
+
+            //Debug.Log("registering spear as asset ID: " + projectileGuid);
+            //NetworkClient.RegisterPrefab(spearPrefab, projectileGuid, SpawnProjectile, UnSpawnProjectile);
         }
 
         [Client]
@@ -131,6 +142,12 @@ namespace Player
         {
             if (!isLocalPlayer) return;
             if (_input == null) return;
+            
+            if (!isAlive)
+            {
+                Respawn();
+                isAlive = true;
+            }
             CheckAttackInput();
         }
 
@@ -142,7 +159,11 @@ namespace Player
                 if (currCooldown <= 0f)
                 {
                     Debug.Log("Player attack input detected");
-                    CmdSpawnProjectile();
+                    Vector3 spawnPosition = _mainCamera.transform.position + _mainCamera.transform.forward;
+                    Quaternion spawnRotation = _mainCamera.transform.rotation;
+                    // TODO add player velocity to projectile speed
+
+                    CmdSpawnProjectile(spawnPosition, spawnRotation);
                     currCooldown = 1f / rateOfFire;
                 }
 
@@ -154,33 +175,14 @@ namespace Player
             }
         }
 
-        //// Used by NetworkClient.RegisterPrefab
-        //GameObject SpawnProjectile(Vector3 position, uint assetId)
-        //{
-        //    Debug.Log("Spawning projectile with assetId: " + assetId);
-
-        //    return newProjectile;
-        //}
-
-        //// Used by NetworkClient.RegisterPrefab
-        //void UnSpawnProjectile(GameObject spawned)
-        //{
-        //    Debug.Log("Unspawning projectile" + spawned.name);
-        //    Destroy(spawned);
-        //}
-
         // [Command] functions are called on the client but executed on the server
         [Command]
-        void CmdSpawnProjectile()
+        void CmdSpawnProjectile(Vector3 spawnPosition, Quaternion spawnRotation)
         {
-            //Debug.Log("CmdSpawnProjectile called on server");
-
-            // Get spawn position and rotation
-            Vector3 spawnPosition = _mainCamera.transform.position + _mainCamera.transform.forward;
-            Quaternion spawnRotation = _mainCamera.transform.rotation;
+            Debug.Log("CmdSpawnProjectile called on server");
 
             // Instantiate the spear
-            GameObject newProjectile = Instantiate(spearPrefab, spawnPosition, spawnRotation) as GameObject;
+            GameObject newProjectile = Instantiate(spearPrefab, spawnPosition, spawnRotation);
 
             // Get SpearData defaults
             SpearData data = SpearData.Default;
@@ -207,6 +209,7 @@ namespace Player
                 Debug.LogError("Spear prefab does not have BasicProjectile component!");
             }
 
+            // Spawn the projectile on the network
             NetworkServer.Spawn(newProjectile);
         }
 
@@ -221,19 +224,20 @@ namespace Player
             }
         }
 
+        [Server]
         void Die()
         {
             // Eventually do something here, for now just set health back
             //Destroy(gameObject);
 
             Debug.Log($"Player died, resetting HP");
-            transform.position += new Vector3(0f, 5f, 0f);
+            isAlive = false;
             currHealth = maxHealth;
         }
 
-        void OnDestroy()
+        void Respawn()
         {
-            NetworkClient.UnregisterPrefab(spearPrefab);
+            transform.position += new Vector3(0f, 5f, 0f);
         }
     }
 }
