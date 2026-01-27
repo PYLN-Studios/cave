@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.mirror.steamworks.net": "https://github.com/Chykary/FizzySteamworks.git?path=/com.mirror.steamworks.net",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.cinemachine": "3.1.2",
     "com.unity.collab-proxy": "2.10.2",

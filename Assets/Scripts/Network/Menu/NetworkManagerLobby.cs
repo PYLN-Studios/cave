@@ -21,6 +21,9 @@ public class NetworkManagerLobby : NetworkManager
     [SerializeField] private GameObject playerSpawnSystem = null;
     [SerializeField] private GameObject roundSystem = null;
 
+    [SerializeField] private GameObject spearPrefab;
+    private uint projectileGuid;
+
     private MapHandler mapHandler;
 
     public static event Action OnClientConnected;
@@ -68,6 +71,9 @@ public class NetworkManagerLobby : NetworkManager
             roomPlayerInstance.IsLeader = isLeader;
 
             NetworkServer.AddPlayerForConnection(conn, roomPlayerInstance.gameObject);
+
+            // Mark the connection as ready so it can send commands
+            NetworkServer.SetClientReady(conn);
         }
     }
 
@@ -118,7 +124,9 @@ public class NetworkManagerLobby : NetworkManager
         if (SceneManager.GetActiveScene().path == menuScene)
         {
             if (!IsReadyToStart()) { return; }
-
+            
+            SetupProjectilePrefabs();
+    
             mapHandler = new MapHandler(mapSet, numberOfRounds);
             ServerChangeScene(mapHandler.NextMap);
         }
@@ -166,4 +174,38 @@ public class NetworkManagerLobby : NetworkManager
         Debug.Log($"OnServerReady called for connection: {conn.connectionId}");
         OnServerReadied?.Invoke(conn);
     }
+
+    #region projectiles spawning
+    private void SetupProjectilePrefabs()
+    {
+        // Get the existing assetId from the prefab's NetworkIdentity
+        NetworkIdentity identity = spearPrefab.GetComponent<NetworkIdentity>();
+        if (identity != null)
+        {
+            projectileGuid = identity.assetId;
+            Debug.Log("Registering spear with existing asset ID: " + projectileGuid);
+            NetworkClient.RegisterPrefab(spearPrefab, projectileGuid, SpawnProjectile, UnSpawnProjectile);
+        }
+        else
+        {
+            Debug.LogError("Spear prefab missing NetworkIdentity component!");
+        }
+    }
+
+    // Used by NetworkClient.RegisterPrefab
+    public GameObject SpawnProjectile(SpawnMessage msg)
+    {
+        Debug.Log("Spawning projectile with assetId: " + msg.assetId);
+        var newProjectile = Instantiate(spearPrefab, msg.position, msg.rotation);
+        return newProjectile;
+    }
+
+    // Used by NetworkClient.RegisterPrefab
+    public void UnSpawnProjectile(GameObject spawned)
+    {
+        Debug.Log("Unspawning projectile" + spawned.name);
+        Destroy(spawned);
+    }
+    #endregion
+
 }

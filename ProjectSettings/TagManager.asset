@@ -6,6 +6,9 @@ TagManager:
   tags:
   - CinemachineTarget
   - SpawnPoint
+  - Projectile
+  - Entity
+  - Ground
   layers:
   - Default
   - TransparentFX

@@ -1054,24 +1054,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4851205909739169208, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
-      propertyPath: transport
+      propertyPath: spawnPrefabs.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851205909739169208, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
+      propertyPath: 'spawnPrefabs.Array.data[2]'
       value: 
-      objectReference: {fileID: 940255929877957761}
+      objectReference: {fileID: 0}
     - target: {fileID: 5795433104329623423, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
       propertyPath: m_Name
       value: NetworkManager kcp
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1600274433418894533, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5795433104329623423, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 940255929877957762}
-    - targetCorrespondingSourceObject: {fileID: 5795433104329623423, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 940255929877957761}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
 --- !u!1001 &996596095263868939
 PrefabInstance:
@@ -1130,15 +1127,7 @@ PrefabInstance:
       value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
-      propertyPath: maxHealth
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
       propertyPath: CurrHealth
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
-      propertyPath: currHealth
       value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 3635978664557297378, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
@@ -1162,39 +1151,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
---- !u!1 &940255929877957760 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5795433104329623423, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
-  m_PrefabInstance: {fileID: 940255929877957759}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &940255929877957761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 940255929877957760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6e55fca1f4e4844593a3dd65a3ecb39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: FizzySteamworks::Mirror.FizzySteam.FizzySteamworks
-  Channels: 0200000001000000
-  Timeout: 25
-  AllowSteamRelay: 1
-  UseNextGenSteamNetworking: 1
---- !u!114 &940255929877957762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 940255929877957760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef4bffeda13d7a748973ff9204401c07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SteamManager
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
