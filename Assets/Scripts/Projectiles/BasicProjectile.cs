@@ -88,13 +88,18 @@ namespace Projectiles
                 }
                 // Move the projectile forward, then apply gravity and angle it
                 transform.position += velocity * Time.deltaTime;
-                Vector3 gravity = Physics.gravity * (1f - weight) * Time.deltaTime;
+                Vector3 gravity = Physics.gravity * weight * Time.deltaTime;
+                // Drag
+                velocity *= (1 - drag * Time.deltaTime);
+
+                // Move and face direction of velocity
                 this.velocity.y += gravity.y;
-                // Rotate to face the direction of velocity
+                
                 if (velocity.sqrMagnitude > 0.01f)
                 {
                     transform.rotation = Quaternion.LookRotation(velocity);
                 }
+
             }
         }
 

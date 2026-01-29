@@ -14,12 +14,12 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_Fog: 1
+  m_FogColor: {r: 0.32651472, g: 0.36412135, b: 0.4566037, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
-  m_LinearFogStart: 0
-  m_LinearFogEnd: 300
+  m_FogDensity: 0.023
+  m_LinearFogStart: 10
+  m_LinearFogEnd: 65
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: e79730ea0159e414ea5bed697411e7bf, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -1123,6 +1123,95 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0271df749728104eac22c3d897fd8ce, type: 3}
+--- !u!1001 &1862162909
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -66.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8670467
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.49822685
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -59.765
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: Name
+      value: Mammoth
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: MaxHealth
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: maxHealth
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: CurrHealth
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: currHealth
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 3635978664557297378, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: sceneId
+      value: 1294575916
+      objectReference: {fileID: 0}
+    - target: {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_Name
+      value: mammoth (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_TagString
+      value: Entity
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952560149274222993, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
 --- !u!1 &1912068957
 GameObject:
   m_ObjectHideFlags: 0
@@ -1395,3 +1484,4 @@ SceneRoots:
   - {fileID: 426646991}
   - {fileID: 614387204}
   - {fileID: 996596095263868939}
+  - {fileID: 1862162909}
