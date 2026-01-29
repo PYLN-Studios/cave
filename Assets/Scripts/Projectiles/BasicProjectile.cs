@@ -13,6 +13,7 @@ namespace Projectiles
         private Quaternion angle = Quaternion.identity;
         private float weight;  // how much the projectile is affected by gravity
         private float drag;    // how much the projectile is slowed by air resistance
+        private float maxTurnSpeed = 60f; // degrees per second, how fast it turns while flying ballistically
 
         // combat params
         [SerializeField] private float damage;
@@ -86,15 +87,23 @@ namespace Projectiles
                 {
                     Destroy(gameObject);
                 }
-                // Move the projectile forward, then apply gravity and angle it
-                transform.position += velocity * Time.deltaTime;
-                Vector3 gravity = Physics.gravity * (1f - weight) * Time.deltaTime;
-                this.velocity.y += gravity.y;
-                // Rotate to face the direction of velocity
+                // apply gravity first
+                velocity += Physics.gravity * weight * Time.deltaTime;
+
+                // clamp drag factor to [0,1]
+                float dragFactor = Mathf.Clamp01(1f - drag * Time.deltaTime);
+                velocity *= dragFactor;
                 if (velocity.sqrMagnitude > 0.01f)
                 {
-                    transform.rotation = Quaternion.LookRotation(velocity);
+                    Quaternion targetRotation = Quaternion.LookRotation(velocity);
+                    transform.rotation = Quaternion.RotateTowards(
+                        transform.rotation,
+                        targetRotation,
+                        maxTurnSpeed * Time.deltaTime);
                 }
+
+                // hopefully this syncs
+                transform.position += velocity * Time.deltaTime;
             }
         }
 

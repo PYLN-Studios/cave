@@ -197,7 +197,7 @@ namespace Player
                     spawnRotation,
                     data.lifetime,
                     damage: data.damage,
-                    weight: 0.1f,
+                    weight: data.weight,
                     drag: data.drag,
                     playerDamageMultiplier: data.playerDamageMultiplier,
                     lingerDuration: data.lingerDuration
