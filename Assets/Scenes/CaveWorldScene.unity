@@ -1330,6 +1330,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManager kcp
       objectReference: {fileID: 0}
+    - target: {fileID: 5795433104329623423, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1600274433418894533, guid: edecbc1728446f54c95b2a3871ba4142, type: 3}
     m_RemovedGameObjects: []
