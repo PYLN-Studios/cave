@@ -128,7 +128,7 @@ public class NetworkManagerLobby : NetworkManager
             SetupProjectilePrefabs();
     
             mapHandler = new MapHandler(mapSet, numberOfRounds);
-            ServerChangeScene(mapHandler.NextMap);
+            ServerChangeScene("TestScene");
         }
     }
 

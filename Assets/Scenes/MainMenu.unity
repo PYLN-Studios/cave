@@ -566,7 +566,10 @@ MonoBehaviour:
   soundList:
   - name: 
     sounds:
-    - {fileID: 8300000, guid: 1bcbe239be2f95d44ad77902ab5e7425, type: 3}
+    - {fileID: 8300000, guid: 8b3ef1299a47af44a943a347b86396b5, type: 3}
+    - {fileID: 8300000, guid: 4135fb95bf677874aaf2e21bd6970370, type: 3}
+    - {fileID: 8300000, guid: 5df11a3cb04f3fd42b2e368785eeaf0f, type: 3}
+    - {fileID: 8300000, guid: de0fbe38571f2854f92121c552204478, type: 3}
   - name: 
     sounds:
     - {fileID: 8300000, guid: c5221a8c368685545b6f35df2d969526, type: 3}
