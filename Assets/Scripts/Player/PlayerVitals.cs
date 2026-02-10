@@ -254,7 +254,13 @@ namespace Player
             }
         }
 
-        private void OnHealthChanged(float _, float __) { }
+        private void OnHealthChanged(float oldValue, float newValue)
+        {
+            if (isClient && isLocalPlayer)
+            {
+                Debug.Log($"Local HP updated: {oldValue} -> {newValue}");
+            }
+        }
 
         private void OnHungerChanged(float _, float __) { }
 

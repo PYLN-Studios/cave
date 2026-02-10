@@ -165,6 +165,7 @@ namespace Player
             if (_vitals != null)
             {
                 _vitals.ApplyDamage(damage);
+                Debug.Log($"Server HP after hit: {_vitals.CurrentHealth}/{_vitals.MaxHealth} for {name}");
             }
         }
 
