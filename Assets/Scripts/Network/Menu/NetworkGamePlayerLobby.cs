@@ -6,6 +6,9 @@ public class NetworkGamePlayerLobby : NetworkBehaviour
     [SyncVar]
     public string DisplayName = "Loading...";
 
+    [SyncVar]
+    public string PlayerId = string.Empty;
+
     private NetworkManagerLobby room;
     private NetworkManagerLobby Room
     {
@@ -31,5 +34,11 @@ public class NetworkGamePlayerLobby : NetworkBehaviour
     public void SetDisplayName(string displayName)
     {
         DisplayName = displayName;
+    }
+
+    [Server]
+    public void SetPlayerIdentity(string playerId)
+    {
+        PlayerId = playerId;
     }
 }
