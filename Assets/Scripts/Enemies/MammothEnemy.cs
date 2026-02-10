@@ -141,9 +141,7 @@ namespace Enemies
             DefaultMove();
         }
 
-        // -------------------------
-        // State: Charging (locked)
-        // -------------------------
+        //Charging state: move fast in a straight line for a certain distance, then enter recovery
         [Server]
         private void TickCharging()
         {
@@ -168,9 +166,7 @@ namespace Enemies
             }
         }
 
-        // -------------------------
-        // State: Recovery (cooldown)
-        // -------------------------
+        // Recovery state: after charging, you can't do anything for a few seconds. If player is far, drop back to normal immediately
         [Server]
         private void TickRecovery()
         {
