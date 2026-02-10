@@ -156,7 +156,6 @@ namespace Player
         [Server]
         public void ApplyDamage(float damage)
         {
-            Debug.Log($"Player {name} took {damage} damage.");
             if (_vitals == null)
             {
                 _vitals = GetComponent<PlayerVitals>();
@@ -165,7 +164,6 @@ namespace Player
             if (_vitals != null)
             {
                 _vitals.ApplyDamage(damage);
-                Debug.Log($"Server HP after hit: {_vitals.CurrentHealth}/{_vitals.MaxHealth} for {name}");
             }
         }
 
