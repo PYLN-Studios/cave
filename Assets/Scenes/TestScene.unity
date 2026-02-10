@@ -398,6 +398,133 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &445214522
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.160001
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: Name
+      value: Mammoth
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: MaxHealth
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: maxHealth
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: CurrHealth
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: currHealth
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 3635978664557297378, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: sceneId
+      value: 1156882855
+      objectReference: {fileID: 0}
+    - target: {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_Name
+      value: mammoth
+      objectReference: {fileID: 0}
+    - target: {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_TagString
+      value: Entity
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952560149274222993, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2151407260995128134, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 445214524}
+  m_SourcePrefab: {fileID: 100100000, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+--- !u!1 &445214523 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+  m_PrefabInstance: {fileID: 445214522}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &445214524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445214523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9a816d835ccc1d4083d234655a59614, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemies.MammothEnemy
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  entityName: Enemy
+  currHealth: 100
+  maxHealth: 100
+  attackDamage: 10
+  attackRange: 2
+  attackCooldown: 1
+  useRandomMove: 0
+  walkSpeed: 3
+  alertRange: 30
+  disengageRange: 80
+  chargeSpeed: 8
+  chargeDistance: 56
+  chargeStartRange: 35
+  chargeCooldown: 6
 --- !u!1001 &496886234
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1117,3 +1244,4 @@ SceneRoots:
   - {fileID: 797707748}
   - {fileID: 936108298}
   - {fileID: 1929324380}
+  - {fileID: 445214522}

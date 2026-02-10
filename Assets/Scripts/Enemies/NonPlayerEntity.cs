@@ -1,3 +1,4 @@
+using Combat;
 using Mirror;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace Enemies
 {
 
     [RequireComponent(typeof(CharacterController))]
-    public class NonPlayerEntity : NetworkBehaviour
+    public class NonPlayerEntity : NetworkBehaviour, IDamageable
     {
 
         [Header("Enemy")]
@@ -14,7 +15,7 @@ namespace Enemies
         public string entityName = "Enemy";
         public float currHealth = 100f;
         public float maxHealth = 100f;
-        private float moveSpeed = 1f;
+        protected float moveSpeed = 1f;
 
         [Header("Attacking")]
         public float attackDamage = 10f;
@@ -26,7 +27,7 @@ namespace Enemies
         public bool useRandomMove = false; // TODO remove later
         private float randomMoveTimer;
         private Vector2 randomMoveInterval = new Vector2(3f, 5f);
-        private Vector3 moveVelocity = Vector3.zero;
+        protected Vector3 moveVelocity = Vector3.zero;
 
         protected CharacterController controller;
 
@@ -44,7 +45,7 @@ namespace Enemies
 
         // Update is called once per frame
         [Server]
-        void Update()
+        protected virtual void Update()
         {
             attackTimer -= Time.deltaTime;
 
@@ -58,10 +59,10 @@ namespace Enemies
             return attackTimer <= 0f;
         }
 
-        protected void DefaultMove()
+        protected virtual void DefaultMove()
         {
             randomMoveTimer -= Time.deltaTime;
-            if (testRandomMove && randomMoveTimer <= 0f)
+            if (randomMoveTimer <= 0f)
             {
                 Vector3 moveVelocity = new Vector3(
                     Random.Range(-1f, 1f),
