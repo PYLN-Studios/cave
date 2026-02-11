@@ -31,7 +31,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
     {
         Debug.Log($"SpawnPlayer called for connection: {conn.connectionId}");
 
-        // Persist by stable player id; fallback to connection id if unavailable.
+        // Persist by stable player id, fallback to connection id if unavailable.
         NetworkGamePlayerLobby gamePlayer = conn.identity != null
             ? conn.identity.GetComponent<NetworkGamePlayerLobby>()
             : null;
@@ -53,7 +53,7 @@ public class PlayerSpawnSystem : NetworkBehaviour
         NetworkManagerLobby manager = NetworkManager.singleton as NetworkManagerLobby;
         if (vitals != null)
         {
-            // Hydrate vitals before handing ownership to the connection.
+            // Load vitals before handing ownership to the connection
             vitals.SetPersistenceKey(playerId);
             if (manager != null && manager.TryGetSavedVitals(playerId, out PlayerVitalsSaveData saveData))
             {
