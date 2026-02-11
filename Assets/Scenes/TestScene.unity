@@ -408,15 +408,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.160001
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1029053480232276387, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
       propertyPath: m_LocalRotation.w
@@ -478,6 +478,14 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Entity
       objectReference: {fileID: 0}
+    - target: {fileID: 3785520737001915984, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_SlopeLimit
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952560149274222993, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3952560149274222993, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
       propertyPath: m_IsTrigger
       value: 1
@@ -518,13 +526,15 @@ MonoBehaviour:
   attackRange: 2
   attackCooldown: 1
   useRandomMove: 0
-  walkSpeed: 3
+  gravity: -30
+  stickToGroundForce: -2
+  walkSpeed: 2
   alertRange: 30
-  disengageRange: 80
-  chargeSpeed: 8
-  chargeDistance: 56
-  chargeStartRange: 35
-  chargeCooldown: 6
+  disengageRange: 60
+  chargeSpeed: 9
+  chargeDistance: 45
+  chargeStartRange: 27
+  chargeCooldown: 5
 --- !u!1001 &496886234
 PrefabInstance:
   m_ObjectHideFlags: 0

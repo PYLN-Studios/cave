@@ -14,17 +14,19 @@ namespace Enemies
         }
 
         [Header("Mammoth Stats")]
-        public float walkSpeed = 3f;
+        public float walkSpeed = 1f;
 
         [Header("Detection")]
         public float alertRange = 30f;     // Normal -> Alert distance is 30 units
-        public float disengageRange = 80f; // Alert -> Normal distance is 80 units
+        public float disengageRange = 60f; // Alert -> Normal distance is 60 units
 
         [Header("Charge")]
-        public float chargeSpeed = 8f;
-        public float chargeDistance = 56f;     // Cannot change direction while charging, so charge ends after traveling this far
-        public float chargeStartRange = 35f;   // only attempt charge if target is within this range
-        public float chargeCooldown = 6f;
+        public float chargeSpeed = 9f;
+        public float chargeDistance = 45f;     // Cannot change direction while charging, so charge ends after traveling this far
+        public float chargeStartRange = 27f;   // only attempt charge if target is within this range
+        public float chargeCooldown = 5f;
+
+        [SerializeField] private float maxMammothHealth = 300f;
 
         // [Header("Optional Timing")]
         // public float alertThinkInterval = 0.5f; // how often to re-evaluate target in alert
@@ -43,12 +45,10 @@ namespace Enemies
             base.Awake();
 
             entityName = "Mammoth";
-            maxHealth = 300f;
-            currHealth = maxHealth;
+            currHealth = maxMammothHealth;
 
             moveSpeed = walkSpeed;
 
-            // Normal state uses random movement
             useRandomMove = true;
         }
 
@@ -147,17 +147,18 @@ namespace Enemies
         {
             Vector3 before = transform.position;
 
-            // Locked direction, fast speed
-            Vector3 step = chargeDir * chargeSpeed * Time.deltaTime;
-            controller.Move(step);
+            float yVel = GetVerticalVelocity(); // from parent
+
+            Vector3 motion = chargeDir * chargeSpeed;
+            motion.y = yVel;
+
+            controller.Move(motion * Time.deltaTime);
 
             Vector3 after = transform.position;
             chargeTraveled += (after - before).magnitude;
 
-            // Keep moveVelocity updated (useful for debug/anim)
-            moveVelocity = chargeDir * chargeSpeed;
+            // DealChargeCollisionDamage();
 
-            // End charge only after actually traveling the required distance
             if (chargeTraveled >= chargeDistance)
             {
                 state = MammothState.Recovery;
@@ -165,6 +166,7 @@ namespace Enemies
                 moveVelocity = Vector3.zero;
             }
         }
+
 
         // Recovery state: after charging, you can't do anything for a few seconds. If player is far, drop back to normal immediately
         [Server]
@@ -199,9 +201,7 @@ namespace Enemies
             }
         }
 
-        // -------------------------
-        // Transitions / Helpers
-        // -------------------------
+        //Helper functions for state transitions and common calculations
         [Server]
         private void EnterNormal()
         {
@@ -244,10 +244,13 @@ namespace Enemies
         {
             // Requires player objects to be tagged "Player"
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            if (players == null || players.Length == 0) return null;
-
+            if (players == null || players.Length == 0) 
+            {
+                return null;
+            }
+            
             GameObject best = null;
-            float bestD = float.MaxValue;
+            float bestDist = float.MaxValue;
 
             Vector3 pos = transform.position;
             pos.y = 0f;
@@ -259,10 +262,10 @@ namespace Enemies
                 Vector3 p = players[i].transform.position;
                 p.y = 0f;
 
-                float d = Vector3.Distance(pos, p);
-                if (d < bestD)
+                float dist = Vector3.Distance(pos, p);
+                if (dist < bestDist)
                 {
-                    bestD = d;
+                    bestDist = dist;
                     best = players[i];
                 }
             }
