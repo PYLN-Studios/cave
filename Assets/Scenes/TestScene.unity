@@ -480,7 +480,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3785520737001915984, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
       propertyPath: m_SlopeLimit
-      value: 45
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 3952560149274222993, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
       propertyPath: m_Size.x
@@ -535,6 +535,7 @@ MonoBehaviour:
   chargeDistance: 45
   chargeStartRange: 27
   chargeCooldown: 5
+  maxMammothHealth: 300
 --- !u!1001 &496886234
 PrefabInstance:
   m_ObjectHideFlags: 0
