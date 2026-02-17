@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Mirror;
 using UnityEngine.Rendering;
 using UnityEngine.SoundManager;
+using Player;
 
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -10,6 +11,7 @@ using UnityEngine.InputSystem;
 namespace StarterAssets
 {
 	[RequireComponent(typeof(CharacterController))]
+	[RequireComponent(typeof(PlayerVitals))]
 	public class FirstPersonController : NetworkBehaviour
 	{
 		[Header("Player")]
@@ -89,6 +91,7 @@ private float _footstepTimer;
 		private CharacterController _controller;
 		private StarterAssetsInputs _input;
 		private GameObject _mainCamera;
+		private PlayerVitals _vitals;
 
 		private const float _threshold = 0.01f;
 
@@ -151,6 +154,7 @@ private float _footstepTimer;
 			// Re-grab references just in case
 			_input = GetComponent<StarterAssetsInputs>();
 			_controller = GetComponent<CharacterController>();
+			_vitals = GetComponent<PlayerVitals>();
 
 			if (_mainCamera == null) {
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -174,6 +178,7 @@ private float _footstepTimer;
 		{
 			_controller = GetComponent<CharacterController>();
 			_input = GetComponent<StarterAssetsInputs>();
+			_vitals = GetComponent<PlayerVitals>();
 
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
@@ -258,23 +263,21 @@ private float _footstepTimer;
 
         private void Move()
 		{
-			// set target speed based on move speed, sprint speed and if sprint is pressed
-			float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
-
-			if (_input.sprint)
+			bool hasMoveInput = _input.move != Vector2.zero;
+			bool sprintActive = _input.sprint && hasMoveInput;
+			if (_vitals != null)
 			{
-				_isSprinting = true;
-            }
-			else
-            {
-				_isSprinting = false;
+				 sprintActive = _vitals.ResolveSprint(Time.deltaTime, _input.sprint, hasMoveInput);
 			}
+
+			_isSprinting = sprintActive;
+			float targetSpeed = sprintActive ? SprintSpeed : MoveSpeed;
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
 			// note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
 			// if there is no input, set the target speed to 0
-			if (_input.move == Vector2.zero) targetSpeed = 0.0f;
+			if (!hasMoveInput) targetSpeed = 0.0f;
 
 			// a reference to the players current horizontal velocity
 			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -389,7 +392,7 @@ private float _footstepTimer;
 			if (horizontalVel.sqrMagnitude < 0.05f) return;
 
 			float interval;
-			if (_input != null && _input.sprint)
+			if (_isSprinting)
 				interval = sprintStepInterval;
 			else
 				interval = walkStepInterval;
@@ -442,3 +445,7 @@ private float _footstepTimer;
 
 	}
 }
+
+
+
+

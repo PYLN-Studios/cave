@@ -115,23 +115,28 @@ namespace Projectiles
 
             Debug.Log($"Projectile hit {other.gameObject.name}");
 
+            NonPlayerEntity entity = other.GetComponentInParent<NonPlayerEntity>();
+            PlayerCombat player = other.GetComponentInParent<PlayerCombat>();
+
             // check if it hit a non-player entity
-            if (other.gameObject.GetComponent<NonPlayerEntity>())
+            if (entity != null)
             {
-                NonPlayerEntity entity = other.gameObject.GetComponent<NonPlayerEntity>();
                 entity.ApplyDamage(damage);
             }
             // check if it hits another player
-            else if (other.gameObject.CompareTag("Player"))
+            else if (player != null)
             {
-                if (other.gameObject == creator
+                if (player.gameObject == creator
                     && aliveTime < 1f) // ignore self-hit for first second
                 {
                     return;
                 }
 
-                PlayerCombat player = other.gameObject.GetComponent<PlayerCombat>();
                 player.ApplyDamage(damage * playerDamageMultiplier);
+            }
+            else if (other.gameObject.CompareTag("Player"))
+            {
+                Debug.LogWarning($"Hit player-tagged object '{other.gameObject.name}' but no PlayerCombat found in parents.");
             }
             // check if it hit the ground
             else if (other.gameObject.CompareTag("Ground"))
@@ -155,4 +160,3 @@ namespace Projectiles
         }
     }
 }
-

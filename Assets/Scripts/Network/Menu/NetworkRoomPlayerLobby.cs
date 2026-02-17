@@ -15,6 +15,9 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
     [SyncVar(hook = nameof(HandleReadyStatusChanged))]
     public bool IsReady = false;
 
+    [SyncVar]
+    public string PlayerId = string.Empty;
+
     private bool isLeader;
     public bool IsLeader {
         set {
@@ -34,6 +37,7 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
 
     public override void OnStartAuthority() {
         CmdSetDisplayName(PlayerNameInput.DisplayName);
+        CmdSetPlayerIdentity(PlayerIdentityProvider.GetLocalPlayerId());
         if (lobbyUI != null)
             lobbyUI.SetActive(true);
 
@@ -103,6 +107,18 @@ public class NetworkRoomPlayerLobby : NetworkBehaviour {
     [Command]
     private void CmdSetDisplayName(string displayName) {
         DisplayName = displayName;
+    }
+
+    [Command]
+    private void CmdSetPlayerIdentity(string playerId)
+    {
+        // Keep a server-side key for persistence across sessions
+        if (string.IsNullOrWhiteSpace(playerId))
+        {
+            playerId = $"conn:{connectionToClient.connectionId}";
+        }
+
+        PlayerId = playerId;
     }
 
     [Command]

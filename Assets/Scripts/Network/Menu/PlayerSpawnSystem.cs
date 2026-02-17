@@ -1,15 +1,13 @@
 using Mirror;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Player;
 
 public class PlayerSpawnSystem : NetworkBehaviour
 {
     [Header("Spawn Settings")]
     [SerializeField] private GameObject playerPrefab = null;
     [SerializeField] private Transform[] spawnPoints = null;
-
-    private static List<Transform> availableSpawnPoints = new List<Transform>();
 
     private int nextSpawnIndex = 0;
 
@@ -32,6 +30,15 @@ public class PlayerSpawnSystem : NetworkBehaviour
     public void SpawnPlayer(NetworkConnectionToClient conn)
     {
         Debug.Log($"SpawnPlayer called for connection: {conn.connectionId}");
+
+        // Persist by stable player id, fallback to connection id if unavailable.
+        NetworkGamePlayerLobby gamePlayer = conn.identity != null
+            ? conn.identity.GetComponent<NetworkGamePlayerLobby>()
+            : null;
+        string playerId = gamePlayer != null && !string.IsNullOrWhiteSpace(gamePlayer.PlayerId)
+            ? gamePlayer.PlayerId
+            : $"conn:{conn.connectionId}";
+
         // Get spawn position
         Transform spawnPoint = GetNextSpawnPoint();
         
@@ -41,6 +48,19 @@ public class PlayerSpawnSystem : NetworkBehaviour
             spawnPoint.position,
             spawnPoint.rotation
         );
+
+        PlayerVitals vitals = playerInstance.GetComponent<PlayerVitals>();
+        NetworkManagerLobby manager = NetworkManager.singleton as NetworkManagerLobby;
+        if (vitals != null)
+        {
+            // Load vitals before handing ownership to the connection
+            vitals.SetPersistenceKey(playerId);
+            if (manager != null && manager.TryGetSavedVitals(playerId, out PlayerVitalsSaveData saveData))
+            {
+                vitals.ApplySavedData(saveData);
+            }
+        }
+
         // If you use spawn, isLocalPlayer doesn't work
         // NetworkServer.Spawn(playerInstance, conn);
 
