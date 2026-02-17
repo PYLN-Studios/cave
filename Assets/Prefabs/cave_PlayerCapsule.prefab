@@ -157,6 +157,8 @@ GameObject:
   - component: {fileID: 8616685848737228382}
   - component: {fileID: 8830159941838809503}
   - component: {fileID: 79798178712889787}
+  - component: {fileID: 7012345678901234561}
+  - component: {fileID: 7012345678901234562}
   - component: {fileID: 1978471637655604388}
   - component: {fileID: 5420857361349278248}
   - component: {fileID: 8616685848737228376}
@@ -206,7 +208,7 @@ CharacterController:
   serializedVersion: 3
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
+  m_SlopeLimit: 60
   m_StepOffset: 0.25
   m_SkinWidth: 0.02
   m_MinMoveDistance: 0
@@ -243,6 +245,11 @@ MonoBehaviour:
   CinemachineCameraTarget: {fileID: 4135013735270702863}
   TopClamp: 90
   BottomClamp: -90
+  walkStepInterval: 0.5
+  sprintStepInterval: 0.35
+  footstepVolume: 1
+  footstepMinDistance: 1.5
+  footstepMaxDistance: 20
 --- !u!114 &79798178712889787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,17 +261,52 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e6a8d92056aee14db619844e19348e8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CombatScript
+  m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerCombat
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  currHealth: 100
-  maxHealth: 100
   weaponName: Spear
   rateOfFire: 1
   currCooldown: 0
   spearPrefab: {fileID: 7189551588235009149, guid: cc8d34f4e8697024596bba030025d1f9, type: 3}
-  spawnPoint: {fileID: 0}
+--- !u!114 &7012345678901234561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8616685848737228372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b6bb3d7ae664749a8a19f3efb8938c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerVitals
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  maxHealth: 100
+  maxHunger: 100
+  hungerDrainPerMinute: 10
+  hungerTickInterval: 1
+  maxStamina: 5
+  staminaRegenDelay: 1
+  staminaRegenPerSecond: 1
+--- !u!114 &7012345678901234562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8616685848737228372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d6d95e778554f2cb0a8186335783f4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.PlayerHUD
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  hudPrefab: {fileID: 6689808690599828964, guid: b5296be714b959548acbba0e0c14e1cb, type: 3}
 --- !u!114 &1978471637655604388
 MonoBehaviour:
   m_ObjectHideFlags: 0

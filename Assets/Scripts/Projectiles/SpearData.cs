@@ -18,7 +18,7 @@ namespace Projectiles
             damage = 50f,
             weight = 1.2f,
             drag = 0.02f,
-            playerDamageMultiplier = 2.1f, // set very high for testing, todo revert to 0.5
+            playerDamageMultiplier = 1f, // set very high for testing, todo revert to 0.5
             lingerDuration = 20f
         };
     }
