@@ -120,8 +120,6 @@ private float _footstepTimer;
 			_playerInput = GetComponent<PlayerInput>();
 		#endif
 
-			Debug.Log($"FirstPersonController.OnStartClient netId={netId} isLocalPlayer={isLocalPlayer}");
-
 			if (!isLocalPlayer)
 			{
 				SetInputEnabled(false);
@@ -152,8 +150,6 @@ private float _footstepTimer;
 
 
 		public override void OnStartLocalPlayer() {
-			Debug.Log($"FirstPersonController.OnStartLocalPlayer netId={netId}");
-
 			// Re-grab references just in case
 			_input = GetComponent<StarterAssetsInputs>();
 			_controller = GetComponent<CharacterController>();
@@ -205,7 +201,6 @@ private float _footstepTimer;
 			SetInputEnabled(false);
 			Cursor.lockState = CursorLockMode.None;
 			Cursor.visible = true;
-			Debug.Log($"FirstPersonController.OnStopLocalPlayer netId={netId}");
 		}
 
 		private void Start()
@@ -248,7 +243,6 @@ private float _footstepTimer;
 			else if (_playerInput != null && _playerInput.enabled && _loggedLocalInputDisabled)
 			{
 				_loggedLocalInputDisabled = false;
-				Debug.Log($"Local input re-enabled on netId={netId}.");
 			}
 #endif
             // Debug.Log($"_input.move: {_input.move} _playerInput.enabled: {_playerInput.enabled} isLocalPlayer: {isLocalPlayer}");
@@ -492,5 +486,4 @@ private float _footstepTimer;
 
 	}
 }
-
 

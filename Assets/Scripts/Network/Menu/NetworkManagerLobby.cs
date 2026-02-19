@@ -125,10 +125,6 @@ public class NetworkManagerLobby : NetworkManager
 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
-        int connId = conn != null ? conn.connectionId : -1;
-        string identityName = conn != null && conn.identity != null ? conn.identity.name : "null";
-        Debug.Log($"OnServerDisconnect conn={connId} identity={identityName} expectedGamePlayers={expectedGamePlayers}");
-
         SavePlayerVitalsFromConnection(conn);
 
         if (conn.identity != null)
@@ -194,7 +190,6 @@ public class NetworkManagerLobby : NetworkManager
         {
             spawnedGameConnectionIds.Clear();
             expectedGamePlayers = 0;
-            Debug.Log($"ServerChangeScene {menuScene} -> {newSceneName}. Building game placeholders for {RoomPlayers.Count} room players.");
 
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
@@ -227,7 +222,6 @@ public class NetworkManagerLobby : NetworkManager
                 else
                 {
                     expectedGamePlayers++;
-                    Debug.Log($"Prepared game placeholder for conn {conn.connectionId}. expectedGamePlayers={expectedGamePlayers}");
                 }
             }
         }
@@ -237,8 +231,6 @@ public class NetworkManagerLobby : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
-        Debug.Log($"OnServerSceneChanged scene={sceneName} expectedGamePlayers={expectedGamePlayers}");
-
         if (playerSpawnSystem != null)
         {
             GameObject playerSpawnSystemInstance = Instantiate(playerSpawnSystem);
@@ -259,24 +251,6 @@ public class NetworkManagerLobby : NetworkManager
         {
             return;
         }
-
-        string identityType = "null";
-        if (conn.identity != null)
-        {
-            if (conn.identity.GetComponent<NetworkGamePlayerLobby>() != null)
-            {
-                identityType = nameof(NetworkGamePlayerLobby);
-            }
-            else if (conn.identity.GetComponent<NetworkRoomPlayerLobby>() != null)
-            {
-                identityType = nameof(NetworkRoomPlayerLobby);
-            }
-            else
-            {
-                identityType = conn.identity.name;
-            }
-        }
-        Debug.Log($"OnServerReady conn={conn.connectionId} scene={SceneManager.GetActiveScene().path} identity={identityType} isReady={conn.isReady}");
 
         if (conn.identity == null)
         {
@@ -299,13 +273,11 @@ public class NetworkManagerLobby : NetworkManager
         // Only barrier-spawn in gameplay scenes.
         if (SceneManager.GetActiveScene().path == menuScene)
         {
-            Debug.Log("Spawn barrier skipped: still in menu scene.");
             return;
         }
 
         if (expectedGamePlayers <= 0)
         {
-            Debug.Log("Spawn barrier skipped: expectedGamePlayers <= 0.");
             return;
         }
 
@@ -328,7 +300,6 @@ public class NetworkManagerLobby : NetworkManager
         // Wait until all expected game players exist and are ready.
         if (gameConnections.Count < expectedGamePlayers)
         {
-            Debug.Log($"Spawn barrier waiting: found {gameConnections.Count}/{expectedGamePlayers} gameplay connections.");
             return;
         }
 
@@ -336,22 +307,18 @@ public class NetworkManagerLobby : NetworkManager
         {
             if (!candidate.isReady)
             {
-                Debug.Log($"Spawn barrier waiting: conn {candidate.connectionId} is not ready yet.");
                 return;
             }
         }
 
-        Debug.Log($"Spawn barrier open: spawning {gameConnections.Count} gameplay connections in deterministic order.");
         gameConnections.Sort((a, b) => a.connectionId.CompareTo(b.connectionId));
         foreach (NetworkConnectionToClient readyConn in gameConnections)
         {
             if (!spawnedGameConnectionIds.Add(readyConn.connectionId))
             {
-                Debug.Log($"Spawn barrier skip: conn {readyConn.connectionId} already spawned.");
                 continue;
             }
 
-            Debug.Log($"Spawn barrier release conn {readyConn.connectionId}");
             OnServerReadied?.Invoke(readyConn);
         }
     }

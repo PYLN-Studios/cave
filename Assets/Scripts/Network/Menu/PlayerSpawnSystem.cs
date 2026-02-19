@@ -20,8 +20,6 @@ public class PlayerSpawnSystem : NetworkBehaviour
             .OrderBy(go => go.name)
             .Select(go => go.transform)
             .ToArray();
-
-        Debug.Log($"PlayerSpawnSystem initialized with {spawnPoints.Length} spawn points.");
     }
 
     private void OnDestroy()
@@ -37,11 +35,8 @@ public class PlayerSpawnSystem : NetworkBehaviour
             return;
         }
 
-        Debug.Log($"SpawnPlayer called for connection: {conn.connectionId}");
-
         if (conn.identity == null)
         {
-            Debug.LogWarning($"SpawnPlayer skipped for conn {conn.connectionId}: no identity yet.");
             return;
         }
 
@@ -49,7 +44,6 @@ public class PlayerSpawnSystem : NetworkBehaviour
         NetworkGamePlayerLobby gamePlayer = conn.identity.GetComponent<NetworkGamePlayerLobby>();
         if (gamePlayer == null)
         {
-            Debug.Log($"SpawnPlayer ignored for conn {conn.connectionId}: identity is already a world player.");
             return;
         }
 
@@ -89,8 +83,6 @@ public class PlayerSpawnSystem : NetworkBehaviour
             Destroy(playerInstance);
             return;
         }
-
-        Debug.Log($"Spawned controllable player for conn {conn.connectionId}.");
     }
 
     private Transform GetNextSpawnPoint()
