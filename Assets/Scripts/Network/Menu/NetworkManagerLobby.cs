@@ -40,6 +40,8 @@ public class NetworkManagerLobby : NetworkManager
     private readonly Dictionary<string, PlayerVitalsSaveData> vitalsSaves = new Dictionary<string, PlayerVitalsSaveData>();
     private string vitalsSavePath;
     private float vitalsAutosaveTimer;
+    private readonly HashSet<int> spawnedGameConnectionIds = new HashSet<int>();
+    private int expectedGamePlayers;
 
     public static event Action OnClientConnected;
     public static event Action OnClientDisconnected;
@@ -145,6 +147,8 @@ public class NetworkManagerLobby : NetworkManager
         OnServerStopped?.Invoke();
         RoomPlayers.Clear();
         GamePlayers.Clear();
+        spawnedGameConnectionIds.Clear();
+        expectedGamePlayers = 0;
     }
 
     public void NotifyPlayersOfReadyState()
@@ -184,20 +188,41 @@ public class NetworkManagerLobby : NetworkManager
         // From menu to game
         if (SceneManager.GetActiveScene().path == menuScene)
         {
+            spawnedGameConnectionIds.Clear();
+            expectedGamePlayers = 0;
+
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
-                var conn = RoomPlayers[i].connectionToClient;
+                var roomPlayer = RoomPlayers[i];
+                if (roomPlayer == null || roomPlayer.connectionToClient == null)
+                {
+                    continue;
+                }
+
+                var conn = roomPlayer.connectionToClient;
                 var gamePlayerInstance = Instantiate(gamePlayerPrefab);
-                gamePlayerInstance.SetDisplayName(RoomPlayers[i].DisplayName);
-                string playerId = string.IsNullOrWhiteSpace(RoomPlayers[i].PlayerId)
+                gamePlayerInstance.SetDisplayName(roomPlayer.DisplayName);
+                string playerId = string.IsNullOrWhiteSpace(roomPlayer.PlayerId)
                     ? $"conn:{conn.connectionId}"
-                    : RoomPlayers[i].PlayerId;
+                    : roomPlayer.PlayerId;
                 gamePlayerInstance.SetPlayerIdentity(playerId);
 
-                NetworkServer.Destroy(conn.identity.gameObject);
-                // obsolete?
-                // NetworkServer.ReplacePlayerForConnection(conn, gamePlayerInstance.gameObject);
-                NetworkServer.ReplacePlayerForConnection(conn, gamePlayerInstance.gameObject, ReplacePlayerOptions.Destroy);
+                // Replace and destroy the previous room player in one step.
+                bool replaced = NetworkServer.ReplacePlayerForConnection(
+                    conn,
+                    gamePlayerInstance.gameObject,
+                    ReplacePlayerOptions.Destroy
+                );
+
+                if (!replaced)
+                {
+                    Debug.LogError($"Failed to replace room player for conn {conn.connectionId} during scene change.");
+                    Destroy(gamePlayerInstance.gameObject);
+                }
+                else
+                {
+                    expectedGamePlayers++;
+                }
             }
         }
 
@@ -222,8 +247,80 @@ public class NetworkManagerLobby : NetworkManager
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
         base.OnServerReady(conn);
-        Debug.Log($"OnServerReady called for connection: {conn.connectionId}");
-        OnServerReadied?.Invoke(conn);
+        if (conn == null)
+        {
+            return;
+        }
+
+        if (conn.identity == null)
+        {
+            return;
+        }
+
+        // Only trigger game-world spawn when this connection still owns the game lobby placeholder.
+        // If it already owns the real player, ignore duplicate Ready messages.
+        if (conn.identity.GetComponent<NetworkGamePlayerLobby>() == null)
+        {
+            return;
+        }
+
+        TrySpawnReadyGamePlayers();
+    }
+
+    [Server]
+    private void TrySpawnReadyGamePlayers()
+    {
+        // Only barrier-spawn in gameplay scenes.
+        if (SceneManager.GetActiveScene().path == menuScene)
+        {
+            return;
+        }
+
+        if (expectedGamePlayers <= 0)
+        {
+            return;
+        }
+
+        List<NetworkConnectionToClient> gameConnections = new List<NetworkConnectionToClient>();
+        foreach (NetworkConnectionToClient candidate in NetworkServer.connections.Values)
+        {
+            if (candidate == null || candidate.identity == null)
+            {
+                continue;
+            }
+
+            if (candidate.identity.GetComponent<NetworkGamePlayerLobby>() == null)
+            {
+                continue;
+            }
+
+            gameConnections.Add(candidate);
+        }
+
+        // Wait until all expected game players exist and are ready.
+        if (gameConnections.Count < expectedGamePlayers)
+        {
+            return;
+        }
+
+        foreach (NetworkConnectionToClient candidate in gameConnections)
+        {
+            if (!candidate.isReady)
+            {
+                return;
+            }
+        }
+
+        gameConnections.Sort((a, b) => a.connectionId.CompareTo(b.connectionId));
+        foreach (NetworkConnectionToClient readyConn in gameConnections)
+        {
+            if (!spawnedGameConnectionIds.Add(readyConn.connectionId))
+            {
+                continue;
+            }
+
+            OnServerReadied?.Invoke(readyConn);
+        }
     }
 
     #region projectiles spawning

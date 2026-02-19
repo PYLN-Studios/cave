@@ -15,8 +15,9 @@ public class PlayerSpawnSystem : NetworkBehaviour
     {
         NetworkManagerLobby.OnServerReadied += SpawnPlayer;
 
-        // Find spawn points in scene by tag
+        // Find spawn points in scene by tag and keep deterministic ordering.
         spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint")
+            .OrderBy(go => go.name)
             .Select(go => go.transform)
             .ToArray();
     }
@@ -29,12 +30,24 @@ public class PlayerSpawnSystem : NetworkBehaviour
     [Server]
     public void SpawnPlayer(NetworkConnectionToClient conn)
     {
-        Debug.Log($"SpawnPlayer called for connection: {conn.connectionId}");
+        if (conn == null)
+        {
+            return;
+        }
+
+        if (conn.identity == null)
+        {
+            return;
+        }
+
+        // Spawn should only happen when connection currently owns the game lobby placeholder.
+        NetworkGamePlayerLobby gamePlayer = conn.identity.GetComponent<NetworkGamePlayerLobby>();
+        if (gamePlayer == null)
+        {
+            return;
+        }
 
         // Persist by stable player id, fallback to connection id if unavailable.
-        NetworkGamePlayerLobby gamePlayer = conn.identity != null
-            ? conn.identity.GetComponent<NetworkGamePlayerLobby>()
-            : null;
         string playerId = gamePlayer != null && !string.IsNullOrWhiteSpace(gamePlayer.PlayerId)
             ? gamePlayer.PlayerId
             : $"conn:{conn.connectionId}";
@@ -61,12 +74,15 @@ public class PlayerSpawnSystem : NetworkBehaviour
             }
         }
 
-        // If you use spawn, isLocalPlayer doesn't work
-        // NetworkServer.Spawn(playerInstance, conn);
-
-        // Use ReplacePlayer rather than AddPlayer because we have the GamePlayer already for this connection
-        NetworkServer.ReplacePlayerForConnection(conn, playerInstance, ReplacePlayerOptions.KeepAuthority);
-        Debug.Log($"Spawned player, hasAuthority: {playerInstance.GetComponent<NetworkIdentity>().isOwned}");
+        // Use ReplacePlayer rather than AddPlayer because we have the GamePlayer already for this connection.
+        // Destroy old game-player placeholder so ownership/local-player state is fully transferred.
+        bool replaced = NetworkServer.ReplacePlayerForConnection(conn, playerInstance, ReplacePlayerOptions.Destroy);
+        if (!replaced)
+        {
+            Debug.LogError($"Failed to replace game player for conn {conn.connectionId}.");
+            Destroy(playerInstance);
+            return;
+        }
     }
 
     private Transform GetNextSpawnPoint()
