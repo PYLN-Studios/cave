@@ -119,6 +119,8 @@ private float _footstepTimer;
 			_playerInput = GetComponent<PlayerInput>();
 		#endif
 
+			Debug.Log($"FirstPersonController.OnStartClient netId={netId} isLocalPlayer={isLocalPlayer}");
+
 			if (!isLocalPlayer)
 			{
 				SetInputEnabled(false);
@@ -149,7 +151,7 @@ private float _footstepTimer;
 
 
 		public override void OnStartLocalPlayer() {
-			Debug.Log("OnStartLocalPlayer called");
+			Debug.Log($"FirstPersonController.OnStartLocalPlayer netId={netId}");
 
 			// Re-grab references just in case
 			_input = GetComponent<StarterAssetsInputs>();
@@ -174,6 +176,37 @@ private float _footstepTimer;
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
 		}
+
+		public override void OnStartAuthority()
+		{
+			base.OnStartAuthority();
+
+			_input = GetComponent<StarterAssetsInputs>();
+	#if ENABLE_INPUT_SYSTEM
+			_playerInput = GetComponent<PlayerInput>();
+	#endif
+
+			if (isLocalPlayer)
+			{
+				SetInputEnabled(true);
+			}
+		}
+
+		public override void OnStopAuthority()
+		{
+			base.OnStopAuthority();
+			SetInputEnabled(false);
+		}
+
+		public override void OnStopLocalPlayer()
+		{
+			base.OnStopLocalPlayer();
+			SetInputEnabled(false);
+			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = true;
+			Debug.Log($"FirstPersonController.OnStopLocalPlayer netId={netId}");
+		}
+
 		private void Start()
 		{
 			_controller = GetComponent<CharacterController>();
@@ -445,7 +478,6 @@ private float _footstepTimer;
 
 	}
 }
-
 
 
 

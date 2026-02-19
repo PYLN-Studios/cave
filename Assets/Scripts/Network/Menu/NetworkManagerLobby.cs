@@ -186,18 +186,32 @@ public class NetworkManagerLobby : NetworkManager
         {
             for (int i = RoomPlayers.Count - 1; i >= 0; i--)
             {
-                var conn = RoomPlayers[i].connectionToClient;
+                var roomPlayer = RoomPlayers[i];
+                if (roomPlayer == null || roomPlayer.connectionToClient == null)
+                {
+                    continue;
+                }
+
+                var conn = roomPlayer.connectionToClient;
                 var gamePlayerInstance = Instantiate(gamePlayerPrefab);
-                gamePlayerInstance.SetDisplayName(RoomPlayers[i].DisplayName);
-                string playerId = string.IsNullOrWhiteSpace(RoomPlayers[i].PlayerId)
+                gamePlayerInstance.SetDisplayName(roomPlayer.DisplayName);
+                string playerId = string.IsNullOrWhiteSpace(roomPlayer.PlayerId)
                     ? $"conn:{conn.connectionId}"
-                    : RoomPlayers[i].PlayerId;
+                    : roomPlayer.PlayerId;
                 gamePlayerInstance.SetPlayerIdentity(playerId);
 
-                NetworkServer.Destroy(conn.identity.gameObject);
-                // obsolete?
-                // NetworkServer.ReplacePlayerForConnection(conn, gamePlayerInstance.gameObject);
-                NetworkServer.ReplacePlayerForConnection(conn, gamePlayerInstance.gameObject, ReplacePlayerOptions.Destroy);
+                // Replace and destroy the previous room player in one step.
+                bool replaced = NetworkServer.ReplacePlayerForConnection(
+                    conn,
+                    gamePlayerInstance.gameObject,
+                    ReplacePlayerOptions.Destroy
+                );
+
+                if (!replaced)
+                {
+                    Debug.LogError($"Failed to replace room player for conn {conn.connectionId} during scene change.");
+                    Destroy(gamePlayerInstance.gameObject);
+                }
             }
         }
 
@@ -222,7 +236,25 @@ public class NetworkManagerLobby : NetworkManager
     public override void OnServerReady(NetworkConnectionToClient conn)
     {
         base.OnServerReady(conn);
+        if (conn == null)
+        {
+            return;
+        }
+
         Debug.Log($"OnServerReady called for connection: {conn.connectionId}");
+
+        if (conn.identity == null)
+        {
+            return;
+        }
+
+        // Only trigger game-world spawn when this connection still owns the game lobby placeholder.
+        // If it already owns the real player, ignore duplicate Ready messages.
+        if (conn.identity.GetComponent<NetworkGamePlayerLobby>() == null)
+        {
+            return;
+        }
+
         OnServerReadied?.Invoke(conn);
     }
 
