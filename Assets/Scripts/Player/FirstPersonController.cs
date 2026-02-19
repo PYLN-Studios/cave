@@ -92,6 +92,7 @@ private float _footstepTimer;
 		private StarterAssetsInputs _input;
 		private GameObject _mainCamera;
 		private PlayerVitals _vitals;
+		private bool _loggedLocalInputDisabled;
 
 		private const float _threshold = 0.01f;
 
@@ -237,6 +238,19 @@ private float _footstepTimer;
 		{
             if (!isLocalPlayer) return;
 			if (_input == null) return;
+
+#if ENABLE_INPUT_SYSTEM
+			if (_playerInput != null && !_playerInput.enabled && !_loggedLocalInputDisabled)
+			{
+				_loggedLocalInputDisabled = true;
+				Debug.LogWarning($"Local input disabled unexpectedly on netId={netId}. isOwned={isOwned} hasAuthority={isOwned}");
+			}
+			else if (_playerInput != null && _playerInput.enabled && _loggedLocalInputDisabled)
+			{
+				_loggedLocalInputDisabled = false;
+				Debug.Log($"Local input re-enabled on netId={netId}.");
+			}
+#endif
             // Debug.Log($"_input.move: {_input.move} _playerInput.enabled: {_playerInput.enabled} isLocalPlayer: {isLocalPlayer}");
             JumpAndGravity();
 			GroundedCheck();
@@ -478,6 +492,5 @@ private float _footstepTimer;
 
 	}
 }
-
 
 
