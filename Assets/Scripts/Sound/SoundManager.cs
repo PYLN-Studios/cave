@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
 
 namespace UnityEngine.SoundManager
@@ -20,8 +21,18 @@ namespace UnityEngine.SoundManager
         [SerializeField] private float defaultMinDistance = 1.5f;
         [SerializeField] private float defaultMaxDistance = 20f;
 
+        [Header("Main Menu Music")]
+        [SerializeField] private string menuSceneName = "MainMenu";
+        [SerializeField] private AudioClip menuMusicClip;
+        [SerializeField] [Range(0f, 1f)] private float menuMusicVolume = 0.6f;
+
+        [Header("Future Area Change Clips")]
+        [SerializeField] private AudioClip[] areaChangeClips;
+
         private AudioSource[] pool;
         private int poolIndex;
+
+        private AudioSource musicSource;
 
         private void Awake()
         {
@@ -34,6 +45,21 @@ namespace UnityEngine.SoundManager
             DontDestroyOnLoad(gameObject);
 
             BuildPool();
+            BuildMusicSource();
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private void Start()
+        {
+            HandleSceneMusic(SceneManager.GetActiveScene());
+        }
+
+        private void OnDestroy()
+        {
+            if (instance == this)
+            {
+                SceneManager.sceneLoaded -= OnSceneLoaded;
+            }
         }
 
         private void BuildPool()
@@ -57,6 +83,41 @@ namespace UnityEngine.SoundManager
             }
         }
 
+        private void BuildMusicSource()
+        {
+            var go = new GameObject("Music_Audio");
+            go.transform.parent = transform;
+
+            musicSource = go.AddComponent<AudioSource>();
+            musicSource.playOnAwake = false;
+            musicSource.loop = true;
+            musicSource.spatialBlend = 0f;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            HandleSceneMusic(scene);
+        }
+
+        private void HandleSceneMusic(Scene scene)
+        {
+            bool isMenuScene = string.Equals(scene.name, menuSceneName, StringComparison.OrdinalIgnoreCase);
+
+            if (isMenuScene)
+            {
+                if (menuMusicClip == null || musicSource == null) return;
+                if (musicSource.isPlaying && musicSource.clip == menuMusicClip) return;
+
+                musicSource.clip = menuMusicClip;
+                musicSource.volume = menuMusicVolume;
+                musicSource.Play();
+            }
+            else if (musicSource != null && musicSource.isPlaying)
+            {
+                musicSource.Stop();
+            }
+        }
+
         public AudioClip GetRandomClip(SoundType sound)
         {
             int idx = (int)sound;
@@ -71,7 +132,6 @@ namespace UnityEngine.SoundManager
             return clips[UnityEngine.Random.Range(0, clips.Length)];
         }
 
-        
         // Plays a 3D sound at a world position per player.
         public static void Play3D(SoundType sound, Vector3 position, float volume = 1f,
                                   float? minDistance = null, float? maxDistance = null)
@@ -108,16 +168,15 @@ namespace UnityEngine.SoundManager
             var clip = instance.GetRandomClip(sound);
             if (clip == null) return;
 
-            
             var src = instance.pool[instance.poolIndex];
             instance.poolIndex = (instance.poolIndex + 1) % instance.pool.Length;
 
-            src.spatialBlend = 0f; 
+            src.spatialBlend = 0f;
             src.volume = volume;
             src.Stop();
             src.PlayOneShot(clip);
 
-            src.spatialBlend = 1f; 
+            src.spatialBlend = 1f;
         }
 
         public void OnEnable()

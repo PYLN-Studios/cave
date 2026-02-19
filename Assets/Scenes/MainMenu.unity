@@ -573,6 +573,10 @@ MonoBehaviour:
   poolSize: 16
   defaultMinDistance: 1.5
   defaultMaxDistance: 25
+  menuSceneName: MainMenu
+  menuMusicClip: {fileID: 8300000, guid: 9be7b5074046d0b48afb39689a8e6de7, type: 3}
+  menuMusicVolume: 0.5
+  areaChangeClips: []
 --- !u!4 &1263538355
 Transform:
   m_ObjectHideFlags: 0
@@ -903,36 +907,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2421269853283684030, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
       propertyPath: spawnPrefabs.Array.size
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2421269853283684030, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
       propertyPath: 'spawnPrefabs.Array.data[0]'
       value: 
-      objectReference: {fileID: 8616685848737228372, guid: 6b296e0747db76e4d9a88d9036ea7923, type: 3}
+      objectReference: {fileID: 259467445546674460, guid: da31246df5106724b98ebc98004e729c, type: 3}
     - target: {fileID: 2421269853283684030, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
       propertyPath: 'spawnPrefabs.Array.data[1]'
       value: 
-      objectReference: {fileID: 259467445546674460, guid: da31246df5106724b98ebc98004e729c, type: 3}
+      objectReference: {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
     - target: {fileID: 2421269853283684030, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
       propertyPath: 'spawnPrefabs.Array.data[2]'
       value: 
-      objectReference: {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+      objectReference: {fileID: 725450967934243674, guid: 5a83f4a617b76c8438a1d9eb3fe24852, type: 3}
     - target: {fileID: 2421269853283684030, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
       propertyPath: 'spawnPrefabs.Array.data[3]'
       value: 
-      objectReference: {fileID: 725450967934243674, guid: 5a83f4a617b76c8438a1d9eb3fe24852, type: 3}
+      objectReference: {fileID: 7218321318906646976, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
     - target: {fileID: 2421269853283684030, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
       propertyPath: 'spawnPrefabs.Array.data[4]'
       value: 
-      objectReference: {fileID: 7218321318906646976, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
+      objectReference: {fileID: 367161713768272800, guid: 511c534bf6714ad47a39a36dfc31266b, type: 3}
     - target: {fileID: 2421269853283684030, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
       propertyPath: 'spawnPrefabs.Array.data[5]'
       value: 
-      objectReference: {fileID: 367161713768272800, guid: 511c534bf6714ad47a39a36dfc31266b, type: 3}
+      objectReference: {fileID: 5971912759427419159, guid: 5977f6d14d055964bbaef23cc0a0b1fc, type: 3}
     - target: {fileID: 2421269853283684030, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
       propertyPath: 'spawnPrefabs.Array.data[6]'
       value: 
-      objectReference: {fileID: 5971912759427419159, guid: 5977f6d14d055964bbaef23cc0a0b1fc, type: 3}
+      objectReference: {fileID: 7189551588235009149, guid: cc8d34f4e8697024596bba030025d1f9, type: 3}
     - target: {fileID: 2421269853283684030, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
       propertyPath: 'spawnPrefabs.Array.data[7]'
       value: 
