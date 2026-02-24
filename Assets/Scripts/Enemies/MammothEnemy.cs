@@ -57,17 +57,17 @@ namespace Enemies
         public SoundType mammothFootstepSound = SoundType.MAMMOTHFOOTSTEP;
 
         [Range(0f, 1f)]
-        public float footstepVolume = 0.7f;
+        public float footstepVolume = 0.8f;
 
         public float footstepMinDistance = 5f;
-        public float footstepMaxDistance = 30f;
+        public float footstepMaxDistance = 60f;
 
         // time between steps when walking (slower), alert and recovery use this interval
-        public float walkStepInterval = 1.6f;
+        public float walkStepInterval = 1.5f;
 
         // time between steps when charging (faster)
         [Tooltip("Seconds between steps when charging (faster).")]
-        public float chargeStepInterval = 0.40f;
+        public float chargeStepInterval = 0.35f;
 
         //must move minimum horizontal speed to trigger footstep sounds, prevents audio spam when barely moving or stuck on geometry
         [Tooltip("Minimum horizontal speed required to trigger footsteps.")]
@@ -77,7 +77,7 @@ namespace Enemies
 
 
         [Header("Rotation")]
-        public float rotationSpeed = 8f;
+        public float rotationSpeed = 7f;
 
 
         protected override void Awake()
@@ -285,7 +285,8 @@ namespace Enemies
         [Server]
         private void StartCharge(GameObject t)
         {
-            footstepTimer = 0f;
+            footstepTimer = 0f;                       
+            RpcPlayMammothFootstepReliable(transform.position); 
             Vector3 dir = (t.transform.position - transform.position);
             dir.y = 0f;
 
@@ -434,20 +435,32 @@ namespace Enemies
             if (footstepTimer > 0f)
                 return;
 
-            RpcPlayMammothFootstep(transform.position);
+            RpcPlayMammothFootstepReliable(transform.position);
             footstepTimer = interval;
         }
 
         //do not need to play sound locally first since mammoth is not player-owned and will not have audio heard only by owner, so just play on clients via RPC when timer triggers
-        [ClientRpc(channel = Channels.Unreliable)]
-        private void RpcPlayMammothFootstep(Vector3 worldPos)
+        // [ClientRpc(channel = Channels.Unreliable)] // Unreliable since it's just footsteps and we don't need every single one to play
+        // private void RpcPlayMammothFootstep(Vector3 worldPos)
+        // {
+        //     SoundManager.Play3D(
+        //         mammothFootstepSound,
+        //         worldPos,
+        //         footstepVolume,
+        //         minDistance: footstepMinDistance,
+        //         maxDistance: footstepMaxDistance
+        //     );
+        // }
+
+        [ClientRpc] // Reliable by default
+        private void RpcPlayMammothFootstepReliable(Vector3 worldPos)
         {
             SoundManager.Play3D(
-                mammothFootstepSound,
+                SoundType.MAMMOTHFOOTSTEP,
                 worldPos,
                 footstepVolume,
-                minDistance: footstepMinDistance,
-                maxDistance: footstepMaxDistance
+                footstepMinDistance,
+                footstepMaxDistance
             );
         }
 
