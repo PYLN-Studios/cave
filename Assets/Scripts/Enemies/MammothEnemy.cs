@@ -1,5 +1,7 @@
 using Mirror;
+using Combat;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Enemies
 {
@@ -25,6 +27,14 @@ namespace Enemies
         public float chargeDistance = 45f;     // Cannot change direction while charging, so charge ends after traveling this far
         public float chargeStartRange = 27f;   // only attempt charge if target is within this range
         public float chargeCooldown = 5f;
+
+        [Header("Charge Damage")]
+        public float chargeDamage = 60f;
+        public float chargeHitCooldown = 0.5f;   // prevents getting hit multiple times in a frame
+        public LayerMask damageLayers;            // set to Player layer in inspector
+
+        // Tracks recently hit targets so we don't spam damage
+        private readonly Dictionary<uint, double> lastHitTimeByNetId = new();
 
         [SerializeField] private float maxMammothHealth = 300f;
 
@@ -73,6 +83,7 @@ namespace Enemies
                     TickRecovery();
                     break;
             }
+            Debug.Log($"[Mammoth] server update state={state}");
         }
 
         // Normal state: random wandering, look for players to enter alert
@@ -80,10 +91,12 @@ namespace Enemies
         private void TickNormal()
         {
             target = FindClosestPlayer();
+            Debug.Log($"[Mammoth] FindClosestPlayer target={(target ? target.name : "null")} alertRange={alertRange}");
 
             if (target != null)
             {
                 float d = DistanceToTarget(target);
+                Debug.Log($"[Mammoth] distToTarget={d}");
                 if (d <= alertRange)
                 {
                     EnterAlert(target);
@@ -134,36 +147,43 @@ namespace Enemies
                 StartCharge(target);
                 state = MammothState.Charging;
                 TickCharging();
+                Debug.Log($"[Mammoth] ENTER CHARGING d={d} cooldownTimer={cooldownTimer}");
                 return;
             }
 
             // Otherwise: wander slowly while alert (or you can chase here if you want)
             DefaultMove();
         }
-
-        //Charging state: move fast in a straight line for a certain distance, then enter recovery
+        // Charging state: move fast in a straight line for a certain distance, then enter recovery
         [Server]
         private void TickCharging()
         {
             Vector3 before = transform.position;
 
-            float yVel = GetVerticalVelocity(); // from parent
+            float yVel = GetVerticalVelocity();
 
             Vector3 motion = chargeDir * chargeSpeed;
             motion.y = yVel;
 
             controller.Move(motion * Time.deltaTime);
 
+            // If hit switched state to Recovery, stop immediately
+            if (state != MammothState.Charging)
+            {
+                moveVelocity = Vector3.zero;
+                chargeDir = Vector3.zero;
+                return;
+            }
+
             Vector3 after = transform.position;
             chargeTraveled += (after - before).magnitude;
-
-            // DealChargeCollisionDamage();
 
             if (chargeTraveled >= chargeDistance)
             {
                 state = MammothState.Recovery;
                 cooldownTimer = chargeCooldown;
                 moveVelocity = Vector3.zero;
+                chargeDir = Vector3.zero;
             }
         }
 
@@ -227,6 +247,8 @@ namespace Enemies
 
             chargeDir = dir.sqrMagnitude > 0.0001f ? dir.normalized : transform.forward;
             chargeTraveled = 0f;
+
+            lastHitTimeByNetId.Clear();
         }
 
         [Server]
@@ -272,5 +294,65 @@ namespace Enemies
 
             return best;
         }
+
+        // [ServerCallback]
+        // private void OnControllerColliderHit(ControllerColliderHit hit)
+        // {
+        //     if (state != MammothState.Charging) return;
+        //     if (hit.collider == null) return;
+
+        //     // Only damage allowed layers
+        //     if (damageLayers.value != 0 && ((1 << hit.gameObject.layer) & damageLayers.value) == 0)
+        //         return;
+
+        //     TryHitWithCharge(hit.collider);
+        // }
+
+
+        //moved layer check to TryHitWithCharge
+        [ServerCallback]
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            if (state != MammothState.Charging) return;
+            if (hit.collider == null) return;
+
+            TryHitWithCharge(hit.collider);
+        }
+
+        [Server]
+        public void TryHitWithCharge(Collider col)
+        {
+            if (state != MammothState.Charging) return;
+            if (col == null) return;
+
+            if (damageLayers.value != 0 && ((1 << col.gameObject.layer) & damageLayers.value) == 0)
+                return;
+
+            if (col.transform.root == transform.root) return;
+
+            var damageable = col.GetComponentInParent<Combat.IDamageable>();
+            if (damageable == null) return;
+
+            var ni = col.GetComponentInParent<NetworkIdentity>();
+            if (ni != null)
+            {
+                double now = NetworkTime.time;
+                if (lastHitTimeByNetId.TryGetValue(ni.netId, out double last) &&
+                    now - last < chargeHitCooldown)
+                    return;
+
+                lastHitTimeByNetId[ni.netId] = now;
+            }
+
+            damageable.ApplyDamage(chargeDamage);
+
+            state = MammothState.Recovery;
+            cooldownTimer = chargeCooldown;
+            moveVelocity = Vector3.zero;
+            chargeDir = Vector3.zero;
+            chargeTraveled = chargeDistance;
+            lastHitTimeByNetId.Clear();
+        }
+
     }
 }
