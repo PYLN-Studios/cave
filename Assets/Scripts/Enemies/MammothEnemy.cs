@@ -2,6 +2,7 @@ using Mirror;
 using Combat;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SoundManager;
 
 namespace Enemies
 {
@@ -50,6 +51,35 @@ namespace Enemies
 
         private GameObject target;
 
+
+        // Audio metadata
+        [Header("Audio")]
+        public SoundType mammothFootstepSound = SoundType.MAMMOTHFOOTSTEP;
+
+        [Range(0f, 1f)]
+        public float footstepVolume = 0.7f;
+
+        public float footstepMinDistance = 5f;
+        public float footstepMaxDistance = 30f;
+
+        // time between steps when walking (slower), alert and recovery use this interval
+        public float walkStepInterval = 1.6f;
+
+        // time between steps when charging (faster)
+        [Tooltip("Seconds between steps when charging (faster).")]
+        public float chargeStepInterval = 0.40f;
+
+        //must move minimum horizontal speed to trigger footstep sounds, prevents audio spam when barely moving or stuck on geometry
+        [Tooltip("Minimum horizontal speed required to trigger footsteps.")]
+        public float footstepMoveThreshold = 0.50f;
+
+        private float footstepTimer = 0f;
+
+
+        [Header("Rotation")]
+        public float rotationSpeed = 8f;
+
+
         protected override void Awake()
         {
             base.Awake();
@@ -83,7 +113,17 @@ namespace Enemies
                     TickRecovery();
                     break;
             }
-            Debug.Log($"[Mammoth] server update state={state}");
+            // Rotate when not charging
+            if (state != MammothState.Charging)
+            {
+                Vector3 horizontalVel = controller.velocity;
+                horizontalVel.y = 0f;
+                RotateTowardsDir(horizontalVel);
+            }
+
+            // footstep 
+            TickFootsteps();
+            // Debug.Log($"[Mammoth] server update state={state}");
         }
 
         // Normal state: random wandering, look for players to enter alert
@@ -158,6 +198,8 @@ namespace Enemies
         [Server]
         private void TickCharging()
         {
+            
+            RotateTowardsDir(chargeDir);
             Vector3 before = transform.position;
 
             float yVel = GetVerticalVelocity();
@@ -181,6 +223,7 @@ namespace Enemies
             if (chargeTraveled >= chargeDistance)
             {
                 state = MammothState.Recovery;
+                footstepTimer = walkStepInterval; 
                 cooldownTimer = chargeCooldown;
                 moveVelocity = Vector3.zero;
                 chargeDir = Vector3.zero;
@@ -242,6 +285,7 @@ namespace Enemies
         [Server]
         private void StartCharge(GameObject t)
         {
+            footstepTimer = 0f;
             Vector3 dir = (t.transform.position - transform.position);
             dir.y = 0f;
 
@@ -354,5 +398,73 @@ namespace Enemies
             lastHitTimeByNetId.Clear();
         }
 
+        [Server]
+        private void TickFootsteps()
+        {
+            if (state == MammothState.Recovery){
+                return;
+            }
+            // Only step sounds if grounded + moving horizontally
+            if (controller == null)
+                return;
+
+            if (!controller.isGrounded)
+                return;
+
+            Vector3 v = controller.velocity;
+            v.y = 0f;
+
+            if (v.magnitude < footstepMoveThreshold)
+                return;
+
+            float interval;
+
+            // Faster footsteps when charging, slower when normal or alert/recovery
+            if (state == MammothState.Charging)
+            {
+                interval = chargeStepInterval;
+            }
+            else
+            {
+                interval = walkStepInterval;
+            }
+
+            footstepTimer -= Time.deltaTime;
+
+            if (footstepTimer > 0f)
+                return;
+
+            RpcPlayMammothFootstep(transform.position);
+            footstepTimer = interval;
+        }
+
+        //do not need to play sound locally first since mammoth is not player-owned and will not have audio heard only by owner, so just play on clients via RPC when timer triggers
+        [ClientRpc(channel = Channels.Unreliable)]
+        private void RpcPlayMammothFootstep(Vector3 worldPos)
+        {
+            SoundManager.Play3D(
+                mammothFootstepSound,
+                worldPos,
+                footstepVolume,
+                minDistance: footstepMinDistance,
+                maxDistance: footstepMaxDistance
+            );
+        }
+
+        [Server]
+        private void RotateTowardsDir(Vector3 direction)
+        {
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude < 0.0001f)
+                return;
+
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
+        }
     }
 }

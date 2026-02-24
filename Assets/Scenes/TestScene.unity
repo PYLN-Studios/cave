@@ -533,10 +533,10 @@ MonoBehaviour:
   useRandomMove: 0
   gravity: -30
   stickToGroundForce: -2
-  walkSpeed: 2
+  walkSpeed: 1
   alertRange: 30
   disengageRange: 60
-  chargeSpeed: 7
+  chargeSpeed: 9
   chargeDistance: 45
   chargeStartRange: 27
   chargeCooldown: 5
@@ -546,6 +546,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   maxMammothHealth: 300
+  mammothFootstepSound: 1
+  footstepVolume: 0.7
+  footstepMinDistance: 5
+  footstepMaxDistance: 30
+  walkStepInterval: 1.6
+  chargeStepInterval: 0.4
+  footstepMoveThreshold: 0.5
+  rotationSpeed: 8
 --- !u!1001 &473020382
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -681,10 +689,10 @@ MonoBehaviour:
   useRandomMove: 0
   gravity: -30
   stickToGroundForce: -2
-  walkSpeed: 2
+  walkSpeed: 1
   alertRange: 30
   disengageRange: 60
-  chargeSpeed: 7
+  chargeSpeed: 9
   chargeDistance: 45
   chargeStartRange: 27
   chargeCooldown: 5
@@ -694,6 +702,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   maxMammothHealth: 300
+  mammothFootstepSound: 1
+  footstepVolume: 0.7
+  footstepMinDistance: 5
+  footstepMaxDistance: 30
+  walkStepInterval: 1.6
+  chargeStepInterval: 0.4
+  footstepMoveThreshold: 0.5
+  rotationSpeed: 8
 --- !u!1001 &496886234
 PrefabInstance:
   m_ObjectHideFlags: 0
