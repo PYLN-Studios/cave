@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &725450967934243674
+--- !u!1 &8840201706541315780
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,25 +8,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7655457848978651151}
-  - component: {fileID: 8162352946521466995}
-  - component: {fileID: 4885870992459548913}
-  - component: {fileID: 4497415829181724048}
-  - component: {fileID: 8839261248865876641}
+  - component: {fileID: 2888579838572643362}
+  - component: {fileID: 71797062642291073}
+  - component: {fileID: 6078058960925986705}
+  - component: {fileID: 8196721563867378869}
   m_Layer: 0
-  m_Name: NetworkManager KCP
+  m_Name: NetworkManagerKCP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7655457848978651151
+--- !u!4 &2888579838572643362
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 725450967934243674}
+  m_GameObject: {fileID: 8840201706541315780}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.75, y: -9.78, z: 10.47669}
@@ -35,30 +34,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8162352946521466995
+--- !u!114 &71797062642291073
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 725450967934243674}
+  m_GameObject: {fileID: 8840201706541315780}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
   sceneId: 0
-  _assetId: 0
+  _assetId: 2722040891
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &4885870992459548913
+--- !u!114 &6078058960925986705
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 725450967934243674}
+  m_GameObject: {fileID: 8840201706541315780}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81c5927ea824a0f42b2d131e1b532713, type: 3}
@@ -72,7 +71,7 @@ MonoBehaviour:
   offlineScene: 
   onlineScene: 
   offlineSceneLoadDelay: 0
-  transport: {fileID: 8839261248865876641}
+  transport: {fileID: 8196721563867378869}
   networkAddress: localhost
   maxConnections: 100
   disconnectInactiveConnections: 0
@@ -82,9 +81,10 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 0}
   - {fileID: 259467445546674460, guid: da31246df5106724b98ebc98004e729c, type: 3}
   - {fileID: 3770123463466727145, guid: 8d3377e6cc043264a8de95e5a00a81ea, type: 3}
+  - {fileID: 725450967934243674, guid: 5a83f4a617b76c8438a1d9eb3fe24852, type: 3}
+  - {fileID: 7218321318906646976, guid: 547cee64a7a686046b0d2596485e79f6, type: 3}
   - {fileID: 367161713768272800, guid: 511c534bf6714ad47a39a36dfc31266b, type: 3}
   - {fileID: 5971912759427419159, guid: 5977f6d14d055964bbaef23cc0a0b1fc, type: 3}
   - {fileID: 7189551588235009149, guid: cc8d34f4e8697024596bba030025d1f9, type: 3}
@@ -111,31 +111,34 @@ MonoBehaviour:
   gamePlayerPrefab: {fileID: 4197902716107249976, guid: da31246df5106724b98ebc98004e729c, type: 3}
   playerSpawnSystem: {fileID: 367161713768272800, guid: 511c534bf6714ad47a39a36dfc31266b, type: 3}
   roundSystem: {fileID: 0}
---- !u!114 &4497415829181724048
+  spearPrefab: {fileID: 7189551588235009149, guid: cc8d34f4e8697024596bba030025d1f9, type: 3}
+  vitalsAutosaveInterval: 15
+--- !u!114 &8196721563867378869
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 725450967934243674}
-  m_Enabled: 0
+  m_GameObject: {fileID: 8840201706541315780}
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef4bffeda13d7a748973ff9204401c07, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SteamManager
---- !u!114 &8839261248865876641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 725450967934243674}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6e55fca1f4e4844593a3dd65a3ecb39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: FizzySteamworks::Mirror.FizzySteam.FizzySteamworks
-  Channels: 0200000001000000
-  Timeout: 25
-  AllowSteamRelay: 1
-  UseNextGenSteamNetworking: 1
+  m_EditorClassIdentifier: Mirror.Transports::kcp2k.KcpTransport
+  port: 7777
+  DualMode: 1
+  NoDelay: 1
+  Interval: 10
+  Timeout: 10000
+  RecvBufferSize: 7361536
+  SendBufferSize: 7361536
+  FastResend: 2
+  ReceiveWindowSize: 4096
+  SendWindowSize: 4096
+  MaxRetransmit: 40
+  MaximizeSocketBuffers: 1
+  ReliableMaxMessageSize: 297433
+  UnreliableMaxMessageSize: 1194
+  debugLog: 0
+  statisticsGUI: 0
+  statisticsLog: 0
