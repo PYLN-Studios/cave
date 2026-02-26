@@ -6,6 +6,15 @@ using UnityEngine.SoundManager;
 
 namespace Enemies
 {
+    /// <summary>
+    /// MammothEnemy: A Large slow enemy that charges at players when they get too close. 
+    /// Has four states: 
+    /// Normal (wandering in random directions, not aware of player), 
+    /// Alert (aware of player, can still wander, but will charge at player if in chargeStartRange and charge is off cooldown),
+    /// Charging (moving fast in a straight line, can damage player on hit), 
+    /// Recovery (after charging, can't do anything for a few seconds).
+    /// Mammoth will transition back to Normal from Alert or Recovery if player is further than disengageRange, 
+    /// and will transition back to Alert from Recovery after cooldown if player is still within disengageRange.
     public class MammothEnemy : NonPlayerEntity
     {
         private enum MammothState
@@ -39,15 +48,15 @@ namespace Enemies
 
         [SerializeField] private float maxMammothHealth = 300f;
 
-        // [Header("Optional Timing")]
-        // public float alertThinkInterval = 0.5f; // how often to re-evaluate target in alert
-        // private float alertThinkTimer = 0f;
-
+        // Current mammoth state
         private MammothState state = MammothState.Normal;
 
+        // Charge state variables
         private Vector3 chargeDir = Vector3.zero;
         private float chargeTraveled = 0f;
         private float cooldownTimer = 0f;
+        private float chargeTimeElapsed = 0f;
+        private float maxChargeDuration = 10f;
 
         private GameObject target;
 
@@ -123,7 +132,6 @@ namespace Enemies
 
             // footstep 
             TickFootsteps();
-            // Debug.Log($"[Mammoth] server update state={state}");
         }
 
         // Normal state: random wandering, look for players to enter alert
@@ -136,7 +144,7 @@ namespace Enemies
             if (target != null)
             {
                 float d = DistanceToTarget(target);
-                Debug.Log($"[Mammoth] distToTarget={d}");
+                // Debug.Log($"[Mammoth] distToTarget={d}");
                 if (d <= alertRange)
                 {
                     EnterAlert(target);
@@ -173,13 +181,6 @@ namespace Enemies
                 return;
             }
 
-            // // Optional: reselect target occasionally (helps if multiple players)
-            // alertThinkTimer -= Time.deltaTime;
-            // if (alertThinkTimer <= 0f)
-            // {
-            //     target = FindClosestPlayer();
-            //     alertThinkTimer = alertThinkInterval;
-            // }
 
             // Decide whether to charge
             if (cooldownTimer <= 0f && target != null && d <= chargeStartRange)
@@ -200,6 +201,20 @@ namespace Enemies
         {
             
             RotateTowardsDir(chargeDir);
+
+            // Counter for how long we've been charging
+            chargeTimeElapsed += Time.deltaTime;
+
+            // Abort charge if it lasts longer than maxChargeDuration to prevent infinite charges due to bugs or getting stuck on geometry
+            if (chargeTimeElapsed >= maxChargeDuration)
+            {
+                state = MammothState.Recovery;
+                chargeDir = Vector3.zero;
+                moveVelocity = Vector3.zero;
+                chargeTraveled = 0f;
+                return;
+            }
+
             Vector3 before = transform.position;
 
             float yVel = GetVerticalVelocity();
@@ -254,7 +269,6 @@ namespace Enemies
                 return;
             }
 
-            // During recovery, you can idle or wander; here we idle
             moveVelocity = Vector3.zero;
 
             if (cooldownTimer <= 0f)
@@ -285,14 +299,16 @@ namespace Enemies
         [Server]
         private void StartCharge(GameObject t)
         {
+            
             footstepTimer = 0f;                       
-            RpcPlayMammothFootstepReliable(transform.position); 
+            RpcPlayMammothFootstepUnreliable(transform.position); 
             Vector3 dir = (t.transform.position - transform.position);
             dir.y = 0f;
 
             chargeDir = dir.sqrMagnitude > 0.0001f ? dir.normalized : transform.forward;
             chargeTraveled = 0f;
-
+            
+            chargeTimeElapsed = 0f;
             lastHitTimeByNetId.Clear();
         }
 
@@ -340,21 +356,6 @@ namespace Enemies
             return best;
         }
 
-        // [ServerCallback]
-        // private void OnControllerColliderHit(ControllerColliderHit hit)
-        // {
-        //     if (state != MammothState.Charging) return;
-        //     if (hit.collider == null) return;
-
-        //     // Only damage allowed layers
-        //     if (damageLayers.value != 0 && ((1 << hit.gameObject.layer) & damageLayers.value) == 0)
-        //         return;
-
-        //     TryHitWithCharge(hit.collider);
-        // }
-
-
-        //moved layer check to TryHitWithCharge
         [ServerCallback]
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
@@ -369,8 +370,8 @@ namespace Enemies
         {
             if (state != MammothState.Charging) return;
             if (col == null) return;
-
-            if (damageLayers.value != 0 && ((1 << col.gameObject.layer) & damageLayers.value) == 0)
+            
+            if (((1 << col.gameObject.layer) & damageLayers.value) == 0)
                 return;
 
             if (col.transform.root == transform.root) return;
@@ -435,24 +436,23 @@ namespace Enemies
             if (footstepTimer > 0f)
                 return;
 
-            RpcPlayMammothFootstepReliable(transform.position);
+            RpcPlayMammothFootstepUnreliable(transform.position);
             footstepTimer = interval;
         }
 
-        //do not need to play sound locally first since mammoth is not player-owned and will not have audio heard only by owner, so just play on clients via RPC when timer triggers
-        // [ClientRpc(channel = Channels.Unreliable)] // Unreliable since it's just footsteps and we don't need every single one to play
-        // private void RpcPlayMammothFootstep(Vector3 worldPos)
-        // {
-        //     SoundManager.Play3D(
-        //         mammothFootstepSound,
-        //         worldPos,
-        //         footstepVolume,
-        //         minDistance: footstepMinDistance,
-        //         maxDistance: footstepMaxDistance
-        //     );
-        // }
+        [ClientRpc(channel = Channels.Unreliable)] //Unreliable since footsteps are frequent and not critical
+        private void RpcPlayMammothFootstepUnreliable(Vector3 worldPos)
+        {
+            SoundManager.Play3D(
+                SoundType.MAMMOTHFOOTSTEP,
+                worldPos,
+                footstepVolume,
+                footstepMinDistance,
+                footstepMaxDistance
+            );
+        }
 
-        [ClientRpc] // Reliable by default
+        [ClientRpc] //Reliable to ensure the audio is played
         private void RpcPlayMammothFootstepReliable(Vector3 worldPos)
         {
             SoundManager.Play3D(

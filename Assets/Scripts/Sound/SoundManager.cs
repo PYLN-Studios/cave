@@ -48,7 +48,7 @@ namespace UnityEngine.SoundManager
                 var src = go.AddComponent<AudioSource>();
                 src.playOnAwake = false;
                 src.loop = false;
-                src.spatialBlend = 1f;            // 3D
+                src.spatialBlend = 1f; // 3D
                 src.minDistance = defaultMinDistance;
                 src.maxDistance = defaultMaxDistance;
                 src.rolloffMode = AudioRolloffMode.Logarithmic;

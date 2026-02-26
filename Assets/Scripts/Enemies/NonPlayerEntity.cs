@@ -22,6 +22,7 @@ namespace Enemies
         [Header("MovementAI")]
         public bool useRandomMove = false; 
         private float randomMoveTimer;
+        // Random move interval range (min, max) in seconds
         private Vector2 randomMoveInterval = new Vector2(3f, 5f);
         protected Vector3 moveVelocity = Vector3.zero;
 
@@ -81,48 +82,8 @@ namespace Enemies
             controller.Move(motion * Time.deltaTime);
         }
 
-        //Old default move but it has gravity function built in
-        // [Server]
-        // protected virtual void DefaultMove()
-        // {
-        //     // Default Move: Random wandering but does not consider gravity
-        //     randomMoveTimer -= Time.deltaTime;
-
-        //     if (useRandomMove && randomMoveTimer <= 0f)
-        //     {
-        //         moveVelocity = new Vector3(
-        //             Random.Range(-1f, 1f),
-        //             0f,
-        //             Random.Range(-1f, 1f)
-        //         ).normalized * moveSpeed;
-
-        //         randomMoveTimer = Random.Range(randomMoveInterval.x, randomMoveInterval.y);
-        //     }
-
-        //     // New Default Move: Random wandering but considers gravity and grounding
-        //     if (controller.isGrounded)
-        //     {
-        //         if (verticalVelocity < 0f)
-        //             verticalVelocity = stickToGroundForce;
-        //     }
-        //     else
-        //     {
-        //         verticalVelocity += gravity * Time.deltaTime;
-        //     }
-
-        //     Vector3 motion = moveVelocity;
-        //     motion.y = verticalVelocity;
-
-        //     controller.Move(motion * Time.deltaTime);
-
-        //     // Old Default Move: Random wandering but does not consider gravity
-
-        //     // // transform.position += moveVelocity * Time.deltaTime; 
-        //     // controller.Move(moveVelocity * Time.deltaTime);
-        // }
-
         [Server]
-        public virtual void Attack(GameObject target)
+        public virtual void DefaultAttack(GameObject target)
         {
             if (!CanAttack() || target == null) return;
 
