@@ -74,7 +74,7 @@ namespace UnityEngine.SoundManager
                 var src = go.AddComponent<AudioSource>();
                 src.playOnAwake = false;
                 src.loop = false;
-                src.spatialBlend = 1f;            // 3D
+                src.spatialBlend = 1f; // 3D
                 src.minDistance = defaultMinDistance;
                 src.maxDistance = defaultMaxDistance;
                 src.rolloffMode = AudioRolloffMode.Logarithmic;
@@ -134,27 +134,38 @@ namespace UnityEngine.SoundManager
 
         // Plays a 3D sound at a world position per player.
         public static void Play3D(SoundType sound, Vector3 position, float volume = 1f,
-                                  float? minDistance = null, float? maxDistance = null)
+                          float? minDistance = null, float? maxDistance = null)
         {
             if (instance == null)
-            {
-                Debug.LogError("SoundManager.instance is null. Put SoundManager in the scene.");
-                return;
-            }
+                    {
+                        // Debug.LogError("SoundManager.instance is null. Put SoundManager in the scene.");
+                        return;
+                    }
+                
 
             var clip = instance.GetRandomClip(sound);
             if (clip == null)
-            {
-                Debug.LogWarning($"No clips assigned for {sound}");
-                return;
-            }
+                    {
+                        // Debug.LogWarning($"No clips assigned for {sound}");
+                        return;
+                    }
+                
 
             var src = instance.pool[instance.poolIndex];
             instance.poolIndex = (instance.poolIndex + 1) % instance.pool.Length;
 
             src.transform.position = position;
-            src.minDistance = minDistance ?? instance.defaultMinDistance;
-            src.maxDistance = maxDistance ?? instance.defaultMaxDistance;
+
+            if (minDistance.HasValue)
+                src.minDistance = minDistance.Value;
+            else
+                src.minDistance = instance.defaultMinDistance;
+
+            if (maxDistance.HasValue)
+                src.maxDistance = maxDistance.Value;
+            else
+                src.maxDistance = instance.defaultMaxDistance;
+
             src.volume = volume;
 
             src.Stop();

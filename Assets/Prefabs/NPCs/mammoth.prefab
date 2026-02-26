@@ -16,7 +16,8 @@ GameObject:
   - component: {fileID: 3635978664557297378}
   - component: {fileID: 64753283454546469}
   - component: {fileID: 3785520737001915984}
-  m_Layer: 0
+  - component: {fileID: -1959077200243519645}
+  m_Layer: 10
   m_Name: mammoth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -35,7 +36,8 @@ Transform:
   m_LocalPosition: {x: 10.499962, y: -3.2, z: 14.465002}
   m_LocalScale: {x: 3.5, y: 2.5, z: 2.5}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 974358321874233586}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &950953707527959530
@@ -110,7 +112,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -131,8 +133,15 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  CurrHealth: 100
-  MaxHealth: 100
+  entityName: Enemy
+  currHealth: 100
+  maxHealth: 100
+  attackDamage: 10
+  attackRange: 2
+  attackCooldown: 1
+  useRandomMove: 0
+  gravity: -30
+  stickToGroundForce: -2
 --- !u!114 &3635978664557297378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Mirror::Mirror.NetworkIdentity
   sceneId: 0
-  _assetId: 0
+  _assetId: 2957209578
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
@@ -204,8 +213,147 @@ CharacterController:
   serializedVersion: 3
   m_Height: 2
   m_Radius: 0.5
-  m_SlopeLimit: 45
+  m_SlopeLimit: 60
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-1959077200243519645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3770123463466727145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9a816d835ccc1d4083d234655a59614, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemies.MammothEnemy
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  entityName: Enemy
+  currHealth: 100
+  maxHealth: 100
+  attackDamage: 10
+  attackRange: 2
+  attackCooldown: 1
+  useRandomMove: 0
+  gravity: -30
+  stickToGroundForce: -2
+  walkSpeed: 1
+  alertRange: 30
+  disengageRange: 60
+  chargeSpeed: 9
+  chargeDistance: 45
+  chargeStartRange: 27
+  chargeCooldown: 5
+  chargeDamage: 60
+  chargeHitCooldown: 0.5
+  damageLayers:
+    serializedVersion: 2
+    m_Bits: 512
+  maxMammothHealth: 300
+  mammothFootstepSound: 1
+  footstepVolume: 0.7
+  footstepMinDistance: 5
+  footstepMaxDistance: 30
+  walkStepInterval: 1.6
+  chargeStepInterval: 0.4
+  footstepMoveThreshold: 0.5
+  rotationSpeed: 8
+--- !u!1 &4195324944749599443
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 974358321874233586}
+  - component: {fileID: 8074412417806358235}
+  - component: {fileID: 1054703397883749934}
+  - component: {fileID: 6778571238297397317}
+  m_Layer: 12
+  m_Name: ChargeHitBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &974358321874233586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4195324944749599443}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.28223664, y: 0.27659208, z: 0.39513513}
+  m_LocalScale: {x: 0.28571427, y: 0.4, z: 0.4}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1029053480232276387}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8074412417806358235
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4195324944749599443}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.6, y: 2.6, z: 2.6}
+  m_Center: {x: -1, y: -0.7, z: -1}
+--- !u!54 &1054703397883749934
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4195324944749599443}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &6778571238297397317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4195324944749599443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dd24cfb73868cb44b8c65dd6d4c4f81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemies.MammothChargeHitbox
