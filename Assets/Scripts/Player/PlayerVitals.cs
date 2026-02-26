@@ -1,10 +1,11 @@
 using Mirror;
 using System;
 using UnityEngine;
+using Combat;
 
 namespace Player
 {
-    public class PlayerVitals : NetworkBehaviour
+    public class PlayerVitals : NetworkBehaviour, IDamageable
     {
         [Header("Identity")]
         [SyncVar] private string persistenceKey = string.Empty;
