@@ -26,9 +26,6 @@ namespace UnityEngine.SoundManager
         [SerializeField] private AudioClip menuMusicClip;
         [SerializeField] [Range(0f, 1f)] private float menuMusicVolume = 0.6f;
 
-        [Header("Future Area Change Clips")]
-        [SerializeField] private AudioClip[] areaChangeClips;
-
         private AudioSource[] pool;
         private int poolIndex;
 
@@ -167,7 +164,6 @@ namespace UnityEngine.SoundManager
                 src.maxDistance = instance.defaultMaxDistance;
 
             src.volume = volume;
-
             src.Stop();
             src.PlayOneShot(clip);
         }
