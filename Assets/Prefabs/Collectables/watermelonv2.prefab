@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 30078ab125b140d49a652b4c1c386c70, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.656391
+      value: 7.7555213
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 30078ab125b140d49a652b4c1c386c70, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.272
+      value: 4.97
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 30078ab125b140d49a652b4c1c386c70, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.03
+      value: -8.53
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 30078ab125b140d49a652b4c1c386c70, type: 3}
       propertyPath: m_LocalRotation.w
@@ -120,7 +120,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 7680
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
