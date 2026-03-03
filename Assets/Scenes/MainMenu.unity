@@ -490,6 +490,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManagerSteam
       objectReference: {fileID: 0}
+    - target: {fileID: 109762933738310276, guid: 786d5647615af4540bf6b9fa2dcdbfd4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 257200389855463096, guid: 786d5647615af4540bf6b9fa2dcdbfd4, type: 3}
       propertyPath: sceneId
       value: 2268132195

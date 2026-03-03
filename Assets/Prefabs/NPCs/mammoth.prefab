@@ -13,13 +13,14 @@ GameObject:
   - component: {fileID: 9117597736899469934}
   - component: {fileID: 3952560149274222993}
   - component: {fileID: 2151407260995128134}
+  - component: {fileID: 5333118275039826646}
   - component: {fileID: 3635978664557297378}
   - component: {fileID: 64753283454546469}
-  - component: {fileID: 3785520737001915984}
   - component: {fileID: -1959077200243519645}
+  - component: {fileID: 8076130233197772707}
   m_Layer: 10
   m_Name: mammoth
-  m_TagString: Untagged
+  m_TagString: Entity
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -134,14 +135,41 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   entityName: Enemy
-  currHealth: 100
-  maxHealth: 100
+  currHealth: 200
+  maxHealth: 200
   attackDamage: 10
   attackRange: 2
   attackCooldown: 1
   useRandomMove: 0
   gravity: -30
   stickToGroundForce: -2
+--- !u!54 &5333118275039826646
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3770123463466727145}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!114 &3635978664557297378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,31 +221,6 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!143 &3785520737001915984
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3770123463466727145}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 60
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-1959077200243519645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,13 +259,38 @@ MonoBehaviour:
     m_Bits: 512
   maxMammothHealth: 300
   mammothFootstepSound: 1
-  footstepVolume: 0.7
+  footstepVolume: 1
   footstepMinDistance: 5
-  footstepMaxDistance: 30
-  walkStepInterval: 1.6
-  chargeStepInterval: 0.4
+  footstepMaxDistance: 60
+  walkStepInterval: 1.5
+  chargeStepInterval: 0.35
   footstepMoveThreshold: 0.5
   rotationSpeed: 8
+--- !u!143 &8076130233197772707
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3770123463466727145}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4195324944749599443
 GameObject:
   m_ObjectHideFlags: 0
