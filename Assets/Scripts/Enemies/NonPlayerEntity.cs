@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Enemies
 {
-    [RequireComponent(typeof(CharacterController))]
     public class NonPlayerEntity : NetworkBehaviour, IDamageable
     {
         [Header("Enemy")]

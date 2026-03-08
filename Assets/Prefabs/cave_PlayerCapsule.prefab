@@ -718,11 +718,13 @@ GameObject:
   - component: {fileID: 8616685848737228382}
   - component: {fileID: 8830159941838809503}
   - component: {fileID: 79798178712889787}
+  - component: {fileID: 4373814065584289142}
   - component: {fileID: 7012345678901234561}
   - component: {fileID: 7012345678901234562}
   - component: {fileID: 1978471637655604388}
   - component: {fileID: 5420857361349278248}
   - component: {fileID: 8616685848737228376}
+  - component: {fileID: -4205481842933989596}
   - component: {fileID: 2061820958901467414}
   - component: {fileID: 8164272705156791802}
   m_Layer: 9
@@ -835,6 +837,18 @@ MonoBehaviour:
   rateOfFire: 1.5
   currCooldown: 0
   spearPrefab: {fileID: 7189551588235009149, guid: cc8d34f4e8697024596bba030025d1f9, type: 3}
+--- !u!114 &4373814065584289142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8616685848737228372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a313482a2f2a8429c2a8370de1462e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!114 &7012345678901234561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1008,6 +1022,18 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &-4205481842933989596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8616685848737228372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a313482a2f2a8429c2a8370de1462e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCollecting
 --- !u!114 &2061820958901467414
 MonoBehaviour:
   m_ObjectHideFlags: 0

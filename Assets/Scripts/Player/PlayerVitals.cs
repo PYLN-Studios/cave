@@ -123,13 +123,7 @@ namespace Player
                 return;
             }
 
-            currentHealth = Mathf.Clamp(currentHealth - damage, 0f, maxHealth);
-            if (currentHealth <= 0f)
-            {
-                isAlive = false;
-                sprintIntentServer = false;
-                moveIntentServer = false;
-            }
+            IncreaseHealth(-damage);
         }
 
         [Server]
@@ -184,6 +178,11 @@ namespace Player
         {
             currentHunger = Mathf.Clamp(hunger, 0f, maxHunger);
         }
+        [Server]
+        public void IncreaseHunger(float hunger)
+        {
+            SetCurrentHunger(currentHunger + hunger);
+        }
 
         [Server]
         public void SetCurrentHealth(float health)
@@ -193,6 +192,17 @@ namespace Player
             {
                 isAlive = true;
             }
+            else if (currentHealth <= 0f)
+            {
+                isAlive = false;
+                sprintIntentServer = false;
+                moveIntentServer = false;
+            }
+        }
+        [Server]
+        public void IncreaseHealth(float health)
+        {
+            SetCurrentHealth(currentHealth + health);
         }
 
         [Server]
@@ -200,6 +210,12 @@ namespace Player
         {
             currentStamina = Mathf.Clamp(stamina, 0f, maxStamina);
         }
+        [Server]
+        public void IncreaseStamina(float stamina)
+        {
+            SetCurrentStamina(currentStamina + stamina);
+        }
+
 
         [Server]
         private void TickHunger()

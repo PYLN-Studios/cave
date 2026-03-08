@@ -490,9 +490,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManagerSteam
       objectReference: {fileID: 0}
-    - target: {fileID: 257200389855463096, guid: 786d5647615af4540bf6b9fa2dcdbfd4, type: 3}
-      propertyPath: sceneId
-      value: 2268132195
+    - target: {fileID: 109762933738310276, guid: 786d5647615af4540bf6b9fa2dcdbfd4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9150747084836335757, guid: 786d5647615af4540bf6b9fa2dcdbfd4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -622,10 +622,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 71797062642291073, guid: 4531a11310c7b8f44aaf4e1e0da9a74f, type: 3}
-      propertyPath: sceneId
-      value: 1993772027
-      objectReference: {fileID: 0}
     - target: {fileID: 2888579838572643362, guid: 4531a11310c7b8f44aaf4e1e0da9a74f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0196
