@@ -13,8 +13,9 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool attack;
+        public bool use;
 
-		[Header("Movement Settings")]
+        [Header("Movement Settings")]
 		public bool analogMovement;
 
 		[Header("Mouse Cursor Settings")]
@@ -49,10 +50,14 @@ namespace StarterAssets
 		{
 			AttackInput(value.isPressed);
 		}
+        public void OnUse(InputValue value)
+        {
+            UseInput(value.isPressed);
+        }
 #endif
 
 
-		public void MoveInput(Vector2 newMoveDirection)
+        public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
 		} 
@@ -76,8 +81,13 @@ namespace StarterAssets
 		{
             attack = newAttackState;
 		}
-		
-		private void OnApplicationFocus(bool hasFocus)
+
+        public void UseInput(bool newUseState)
+        {
+            use = newUseState;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
 		}

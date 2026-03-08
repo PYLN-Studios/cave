@@ -68,6 +68,9 @@ PrefabInstance:
       addedObject: {fileID: 5273080040254336576}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 30078ab125b140d49a652b4c1c386c70, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 1552697425512233198}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 30078ab125b140d49a652b4c1c386c70, type: 3}
+      insertIndex: -1
       addedObject: {fileID: -2040630462568070415}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 30078ab125b140d49a652b4c1c386c70, type: 3}
       insertIndex: -1
@@ -128,6 +131,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1552697425512233198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3555974162018079182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c798270de9e6e70429762eb765b2082c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interactables.Watermelon
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!114 &-2040630462568070415
 MonoBehaviour:
   m_ObjectHideFlags: 0
