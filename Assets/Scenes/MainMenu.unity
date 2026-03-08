@@ -490,6 +490,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NetworkManagerSteam
       objectReference: {fileID: 0}
+    - target: {fileID: 109762933738310276, guid: 786d5647615af4540bf6b9fa2dcdbfd4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9150747084836335757, guid: 786d5647615af4540bf6b9fa2dcdbfd4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 28.62629
@@ -661,6 +665,10 @@ PrefabInstance:
     - target: {fileID: 8840201706541315780, guid: 4531a11310c7b8f44aaf4e1e0da9a74f, type: 3}
       propertyPath: m_Name
       value: NetworkManagerKCP
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840201706541315780, guid: 4531a11310c7b8f44aaf4e1e0da9a74f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
