@@ -886,6 +886,26 @@ PrefabInstance:
       propertyPath: menuMusicClip
       value: 
       objectReference: {fileID: 8300000, guid: d41b69fa0d32d49488d452a3493e7925, type: 3}
+    - target: {fileID: 2116669638351151651, guid: 031c97bf0e2cd48458ec3ee3289eef08, type: 3}
+      propertyPath: menuMusicEvent.Path
+      value: event:/Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 2116669638351151651, guid: 031c97bf0e2cd48458ec3ee3289eef08, type: 3}
+      propertyPath: menuMusicEvent.Guid.Data1
+      value: -1456403760
+      objectReference: {fileID: 0}
+    - target: {fileID: 2116669638351151651, guid: 031c97bf0e2cd48458ec3ee3289eef08, type: 3}
+      propertyPath: menuMusicEvent.Guid.Data2
+      value: 1153027229
+      objectReference: {fileID: 0}
+    - target: {fileID: 2116669638351151651, guid: 031c97bf0e2cd48458ec3ee3289eef08, type: 3}
+      propertyPath: menuMusicEvent.Guid.Data3
+      value: 1492215191
+      objectReference: {fileID: 0}
+    - target: {fileID: 2116669638351151651, guid: 031c97bf0e2cd48458ec3ee3289eef08, type: 3}
+      propertyPath: menuMusicEvent.Guid.Data4
+      value: 114624748
+      objectReference: {fileID: 0}
     - target: {fileID: 4820750902823604250, guid: 031c97bf0e2cd48458ec3ee3289eef08, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.70682

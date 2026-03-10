@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using FMOD.Studio;
+using FMODUnity;
 
 namespace UnityEngine.SoundManager
 {
@@ -23,13 +25,13 @@ namespace UnityEngine.SoundManager
 
         [Header("Main Menu Music")]
         [SerializeField] private string menuSceneName = "MainMenu";
-        [SerializeField] private AudioClip menuMusicClip;
+        [SerializeField] private EventReference menuMusicEvent;
         [SerializeField] [Range(0f, 1f)] private float menuMusicVolume = 0.6f;
 
         private AudioSource[] pool;
         private int poolIndex;
 
-        private AudioSource musicSource;
+        private EventInstance menuMusicInstance;
 
         private void Awake()
         {
@@ -42,7 +44,6 @@ namespace UnityEngine.SoundManager
             DontDestroyOnLoad(gameObject);
 
             BuildPool();
-            BuildMusicSource();
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
@@ -56,6 +57,7 @@ namespace UnityEngine.SoundManager
             if (instance == this)
             {
                 SceneManager.sceneLoaded -= OnSceneLoaded;
+                StopAndReleaseMenuMusic();
             }
         }
 
@@ -80,17 +82,6 @@ namespace UnityEngine.SoundManager
             }
         }
 
-        private void BuildMusicSource()
-        {
-            var go = new GameObject("Music_Audio");
-            go.transform.parent = transform;
-
-            musicSource = go.AddComponent<AudioSource>();
-            musicSource.playOnAwake = false;
-            musicSource.loop = true;
-            musicSource.spatialBlend = 0f;
-        }
-
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             HandleSceneMusic(scene);
@@ -102,17 +93,49 @@ namespace UnityEngine.SoundManager
 
             if (isMenuScene)
             {
-                if (menuMusicClip == null || musicSource == null) return;
-                if (musicSource.isPlaying && musicSource.clip == menuMusicClip) return;
-
-                musicSource.clip = menuMusicClip;
-                musicSource.volume = menuMusicVolume;
-                musicSource.Play();
+                StartMenuMusicIfNeeded();
             }
-            else if (musicSource != null && musicSource.isPlaying)
+            else
             {
-                musicSource.Stop();
+                StopMenuMusic();
             }
+        }
+
+        private void StartMenuMusicIfNeeded()
+        {
+            if (menuMusicEvent.IsNull) return;
+
+            if (!menuMusicInstance.isValid())
+            {
+                menuMusicInstance = RuntimeManager.CreateInstance(menuMusicEvent);
+                menuMusicInstance.setVolume(menuMusicVolume);
+            }
+
+            menuMusicInstance.getPlaybackState(out PLAYBACK_STATE playbackState);
+            if (playbackState == PLAYBACK_STATE.PLAYING || playbackState == PLAYBACK_STATE.STARTING)
+                return;
+
+            menuMusicInstance.start();
+        }
+
+        private void StopMenuMusic()
+        {
+            if (!menuMusicInstance.isValid()) return;
+
+            menuMusicInstance.getPlaybackState(out PLAYBACK_STATE playbackState);
+            if (playbackState == PLAYBACK_STATE.PLAYING || playbackState == PLAYBACK_STATE.STARTING)
+            {
+                menuMusicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            }
+        }
+
+        private void StopAndReleaseMenuMusic()
+        {
+            if (!menuMusicInstance.isValid()) return;
+
+            menuMusicInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            menuMusicInstance.release();
+            menuMusicInstance.clearHandle();
         }
 
         public AudioClip GetRandomClip(SoundType sound)
