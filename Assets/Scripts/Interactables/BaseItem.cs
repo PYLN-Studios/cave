@@ -12,6 +12,17 @@ namespace Interactables
 {
     abstract public class BaseItem : NetworkBehaviour, IInteractable
     {
+        #region Item Info
+
+        [Header("Item Info")]
+        [SerializeField] protected string itemName = "Item";
+        [SerializeField] protected int itemID = 0;
+
+        public string ItemName => itemName;
+        public int ItemID => itemID;
+
+        #endregion
+
         #region Unity Callbacks
 
         /// <summary>
@@ -35,8 +46,14 @@ namespace Interactables
 
         virtual public float InteractRange { get; set; } = 2f;
 
+        /// <summary>
+        /// Called when player looks at item
+        /// </summary>
         abstract public int OnHover();
 
+        /// <summary>
+        /// Called when player interacts with item
+        /// </summary>
         abstract public int OnInteract(GameObject player);
 
         #region Start & Stop Callbacks
