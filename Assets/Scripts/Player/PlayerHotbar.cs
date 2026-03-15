@@ -5,6 +5,8 @@ namespace Player
 {
     public class PlayerHotbar : NetworkBehaviour
     {
+        public static PlayerHotbar LocalInstance;
+
         public int hotbarSize = 5;
 
         [SyncVar]
@@ -15,6 +17,17 @@ namespace Player
         private void Awake()
         {
             hotbarItems = new int[hotbarSize];
+        }
+
+        public override void OnStartLocalPlayer()
+        {
+            LocalInstance = this;
+        }
+
+        private void OnDestroy()
+        {
+            if (LocalInstance == this)
+                LocalInstance = null;
         }
 
         private void Update()
@@ -30,14 +43,14 @@ namespace Player
 
         public bool AddItem(int itemID)
         {
-            // Try selected slot first
             if (TryPlaceItem(selectedIndex, itemID))
                 return true;
 
-            // Else try lowest empty slot
             for (int i = 0; i < hotbarSize; i++)
+            {
                 if (TryPlaceItem(i, itemID))
                     return true;
+            }
 
             Debug.Log("Hotbar full!");
             return false;
@@ -58,14 +71,14 @@ namespace Player
             return hotbarItems[selectedIndex];
         }
 
-        public void SelectSlot(int slot)
+        private void SelectSlot(int index)
         {
-            if (slot >= 0 && slot < hotbarSize)
-            {
-                selectedIndex = slot;
-                Debug.Log("Selected hotbar slot: " + slot);
-            }
+            if (index < 0 || index >= hotbarSize) return;
+
+            selectedIndex = index;
+            Debug.Log("Selected slot: " + selectedIndex);
         }
+
         public int GetSelectedIndex()
         {
             return selectedIndex;

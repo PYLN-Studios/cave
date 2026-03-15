@@ -1,36 +1,35 @@
 using UnityEngine;
-using UnityEngine.UI;
+using Player;
 
-namespace Player
+public class HotbarUI : MonoBehaviour
 {
-    public class HotbarUI : MonoBehaviour
+    public GameObject[] highlights;
+
+    void Start()
     {
-        public Image[] slotImages;     // slot backgrounds
-        public Color normalColor = new Color(1,1,1,0.4f);
-        public Color selectedColor = Color.white;
-
-        private PlayerHotbar playerHotbar;
-
-        void Start()
+        for (int i = 0; i < highlights.Length; i++)
         {
-            playerHotbar = FindObjectOfType<PlayerHotbar>();
-        }
-
-        void Update()
-        {
-            if (playerHotbar == null) return;
-
-            UpdateSlots(playerHotbar.GetSelectedIndex());
-        }
-
-        void UpdateSlots(int selected)
-        {
-            for (int i = 0; i < slotImages.Length; i++)
+            if (highlights[i] != null)
             {
-                if (i == selected)
-                    slotImages[i].color = selectedColor;
-                else
-                    slotImages[i].color = normalColor;
+                highlights[i].SetActive(false);
+            }
+        }
+    }
+
+    void Update()
+    {
+        if (PlayerHotbar.LocalInstance == null) return;
+
+        int selected = PlayerHotbar.LocalInstance.GetSelectedIndex();
+
+        Debug.Log("UI selected slot: " + selected);
+        Debug.Log("LocalInstance: " + PlayerHotbar.LocalInstance);
+
+        for (int i = 0; i < highlights.Length; i++)
+        {
+            if (highlights[i] != null)
+            {
+                highlights[i].SetActive(i == selected);
             }
         }
     }

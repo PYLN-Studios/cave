@@ -139,7 +139,7 @@ namespace Enemies
         private void TickNormal()
         {
             target = FindClosestPlayer();
-            Debug.Log($"[Mammoth] FindClosestPlayer target={(target ? target.name : "null")} alertRange={alertRange}");
+            // Debug.Log($"[Mammoth] FindClosestPlayer target={(target ? target.name : "null")} alertRange={alertRange}");
 
             if (target != null)
             {
