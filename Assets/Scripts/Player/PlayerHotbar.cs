@@ -10,11 +10,11 @@ namespace Player
         [SyncVar]
         private int selectedIndex = 0;
 
-        public string[] hotbarItems;
+        public int[] hotbarItems;
 
         private void Awake()
         {
-            hotbarItems = new string[hotbarSize];
+            hotbarItems = new int[hotbarSize];
         }
 
         private void Update()
@@ -28,23 +28,32 @@ namespace Player
             if (Input.GetKeyDown(KeyCode.Alpha5)) SelectSlot(4);
         }
 
-        public bool AddItem(string itemID)
+        public bool AddItem(int itemID)
         {
+            // Try selected slot first
+            if (TryPlaceItem(selectedIndex, itemID))
+                return true;
+
+            // Else try lowest empty slot
             for (int i = 0; i < hotbarSize; i++)
-            {
-                if (string.IsNullOrEmpty(hotbarItems[i]))
-                {
-                    hotbarItems[i] = itemID;
-                    Debug.Log("Added item " + itemID + " to hotbar slot " + i);
+                if (TryPlaceItem(i, itemID))
                     return true;
-                }
-            }
 
             Debug.Log("Hotbar full!");
             return false;
         }
 
-        public string GetSelectedItem()
+        private bool TryPlaceItem(int slot, int itemID)
+        {
+            if (hotbarItems[slot] == 0)
+            {
+                hotbarItems[slot] = itemID;
+                return true;
+            }
+            return false;
+        }
+
+        public int GetSelectedItem()
         {
             return hotbarItems[selectedIndex];
         }
@@ -56,6 +65,10 @@ namespace Player
                 selectedIndex = slot;
                 Debug.Log("Selected hotbar slot: " + slot);
             }
+        }
+        public int GetSelectedIndex()
+        {
+            return selectedIndex;
         }
     }
 }
