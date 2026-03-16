@@ -1,35 +1,42 @@
 using UnityEngine;
 using Player;
 
-public class HotbarUI : MonoBehaviour
+namespace UI
 {
-    public GameObject[] highlights;
-
-    void Start()
+    public class HotbarUI : MonoBehaviour
     {
-        for (int i = 0; i < highlights.Length; i++)
+        [SerializeField] private GameObject[] highlights;
+
+        private PlayerHotbar hotbar;
+
+        public void SetHotbar(PlayerHotbar playerHotbar)
         {
-            if (highlights[i] != null)
-            {
-                highlights[i].SetActive(false);
-            }
+            hotbar = playerHotbar;
+            Refresh();
         }
-    }
 
-    void Update()
-    {
-        if (PlayerHotbar.LocalInstance == null) return;
-
-        int selected = PlayerHotbar.LocalInstance.GetSelectedIndex();
-
-        Debug.Log("UI selected slot: " + selected);
-        Debug.Log("LocalInstance: " + PlayerHotbar.LocalInstance);
-
-        for (int i = 0; i < highlights.Length; i++)
+        private void OnEnable()
         {
-            if (highlights[i] != null)
+            Refresh();
+        }
+
+        private void Update()
+        {
+            Refresh();
+        }
+
+        private void Refresh()
+        {
+            if (hotbar == null || highlights == null) return;
+
+            int selected = hotbar.GetSelectedIndex();
+
+            for (int i = 0; i < highlights.Length; i++)
             {
-                highlights[i].SetActive(i == selected);
+                if (highlights[i] != null)
+                {
+                    highlights[i].SetActive(i == selected);
+                }
             }
         }
     }

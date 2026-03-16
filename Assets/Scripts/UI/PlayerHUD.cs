@@ -66,7 +66,25 @@ namespace UI
             }
 
             hudInstance = Instantiate(hudPrefab);
+
+            PlayerHotbar playerHotbar = GetComponent<PlayerHotbar>();
+            HotbarUI hotbarUI = hudInstance.GetComponentInChildren<HotbarUI>(true);
+
+            if (hotbarUI == null)
+            {
+                Debug.LogError("HUD prefab is missing HotbarUI.");
+            }
+            else if (playerHotbar == null)
+            {
+                Debug.LogError("Player is missing PlayerHotbar.");
+            }
+            else
+            {
+                hotbarUI.SetHotbar(playerHotbar);
+            }
+
             PlayerHUDRefs refs = hudInstance.GetComponent<PlayerHUDRefs>();
+
             if (refs == null)
             {
                 Debug.LogError("HUD prefab is missing PlayerHUDRefs.");
