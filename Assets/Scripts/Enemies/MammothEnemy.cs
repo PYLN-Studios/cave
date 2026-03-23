@@ -139,7 +139,7 @@ namespace Enemies
         private void TickNormal()
         {
             target = FindClosestPlayer();
-            Debug.Log($"[Mammoth] FindClosestPlayer target={(target ? target.name : "null")} alertRange={alertRange}");
+            //Debug.Log($"[Mammoth] FindClosestPlayer target={(target ? target.name : "null")} alertRange={alertRange}");
 
             if (target != null)
             {
@@ -188,7 +188,7 @@ namespace Enemies
                 StartCharge(target);
                 state = MammothState.Charging;
                 TickCharging();
-                Debug.Log($"[Mammoth] ENTER CHARGING d={d} cooldownTimer={cooldownTimer}");
+                //Debug.Log($"[Mammoth] ENTER CHARGING d={d} cooldownTimer={cooldownTimer}");
                 return;
             }
 

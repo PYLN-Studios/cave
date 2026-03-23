@@ -53,30 +53,37 @@ namespace ProceduralGeneration
         /// <param name="resolution">higher values mean its more "zoomed out" in the perlin noise, creating smaller groups</param>
         /// <param name="scanInterval">distance between points to check</param>
         /// <param name="jitterDistance">vary where we scan randomly</param>
+        [Server]
         public void FindCandidateSpawns(
             int seed,
             ItemSpawnData[][] spawnData,
             Rect area = default,
-            float resolution = 5f,
+            float perlinResolution = 100f,
             float scanInterval = 1f,
-            float jitterDistance = 0.3f)
+            float jitterRealDistance = 0.3f,
+            float jitterPerlin = 0.04f
+            )
         {
             // initialize PRNG carefully to prevent correlated randomness (doubt it matters that much in this case but whatever)
             // note: itemSpawner uses the perlin noise in a line near x = 0 and positive y, please avoid this when generating terrain!
-            System.Random parentRandom = new System.Random(seed);
-            System.Random jitterRandom = new System.Random(parentRandom.Next(0, int.MaxValue));
-            System.Random numToSpawnRandom = new System.Random(parentRandom.Next(0, int.MaxValue));
-            System.Random shuffleRandom = new System.Random(parentRandom.Next(0, int.MaxValue));
+            Random.InitState(seed);
 
             // if the area is default, look for a terrain object and use its bounds as the area to spawn in
             worldTerrain = FindFirstObjectByType<Terrain>();
             if (area == default)
             {
+                if (worldTerrain == null)
+                {
+                    Debug.LogError("ItemSpawner could not find a Terrain to use for spawning.");
+                    return;
+                }
+
+                // don't spawn right at the edges
                 area = new Rect(
-                    worldTerrain.transform.position.x,
-                    worldTerrain.transform.position.z,
-                    worldTerrain.terrainData.size.x,
-                    worldTerrain.terrainData.size.z
+                    worldTerrain.transform.position.x + 4.0f,
+                    worldTerrain.transform.position.z + 4.0f,
+                    worldTerrain.terrainData.size.x - 8.0f,
+                    worldTerrain.terrainData.size.z - 8.0f
                 );
             }
 
@@ -93,18 +100,19 @@ namespace ProceduralGeneration
             // scan through the area in a grid pattern, with some random jitter, and get the perlin noise at each point to determine the group.
             for (float x = area.xMin; x <= area.xMax; x += scanInterval)
             {
-                for (float z = area.yMin; z <= area.yMax; z += scanInterval)
+                for (float y = area.yMin; y <= area.yMax; y += scanInterval)
                 {
-                    float jitterX = (float)(jitterRandom.NextDouble() * 2.0 - 1.0) * jitterDistance;
-                    float jitterZ = (float)(jitterRandom.NextDouble() * 2.0 - 1.0) * jitterDistance;
+                    float perlinScalingX = perlinResolution / area.width;
+                    float perlinScalingY = perlinResolution / area.height;
 
-                    float sampleX = (x + jitterX) / resolution;
-                    float sampleY = ((z + jitterZ) / resolution) + (seed * 100f);
-
-                    float perlinValue = Mathf.PerlinNoise(sampleX, sampleY);
+                    float perlinX = x * perlinScalingX;
+                    float perlinY = (y * perlinScalingY) + (seed * 1000f);
+                    float perlinValue = Mathf.PerlinNoise(perlinX, perlinY) + ((Random.value - 0.5f) * jitterPerlin);
                     int groupIndex = Mathf.Min((int)(perlinValue * numGroups), numGroups - 1);
 
-                    Vector2 point = new Vector2(x + jitterX, z + jitterZ);
+                    float jitterX = (Random.value * 2.0f - 1.0f) * jitterRealDistance;
+                    float jitterY = (Random.value * 2.0f - 1.0f) * jitterRealDistance;
+                    Vector2 point = new Vector2(x + jitterX, y + jitterY);
                     candidateSpawnPointsWithValues[groupIndex].Add((point, perlinValue));
                 }
             }
@@ -134,31 +142,35 @@ namespace ProceduralGeneration
                 // combine all the items in this group into one list, with each item repeated according to how many times it should spawn
                 foreach (ItemSpawnData itemData in itemsInGroup)
                 {
-                    int numToSpawn = numToSpawnRandom.Next(itemData.minRate, itemData.maxRate + 1);
+                    int numToSpawn = Random.Range(itemData.minRate, itemData.maxRate + 1);
 
                     for (int i = 0; i < numToSpawn; i++)
                     {
                         itemsToSpawn.Add(itemData.item);
                     }
                 }
-                SeededShuffle(itemsToSpawn, shuffleRandom.Next(0, int.MaxValue));
+                SeededShuffle(itemsToSpawn, Random.Range(0, int.MaxValue));
 
                 int numActuallySpawned = 0;
                 int nextSpawnIndex = 0;
                 
                 foreach (GameObject item in itemsToSpawn)
                 {
-                    bool spawned = false;
-                    for (int attempts = 0; attempts < spawnAttempts; attempts++, nextSpawnIndex++)
+                    for (int attempts = 0; attempts < spawnAttempts; attempts++)
                     {
                         Vector2 spawnPoint = groupPoints[nextSpawnIndex];
                         if (AttemptSpawnOnTerrain(spawnPoint, item))
                         {
                             numActuallySpawned++;
+                            nextSpawnIndex++;
                             break;
                         }
+                        Debug.LogWarning($"Group {groupIndex}: Failed to spawn {item.name} at {spawnPoint}");
+                        nextSpawnIndex++;
                     }
                 }
+
+                Debug.Log($"Group {groupIndex}: successfully spawned {numActuallySpawned} of {itemsToSpawn.Count} items.");
             }
         }
 
@@ -182,6 +194,7 @@ namespace ProceduralGeneration
         /// <param name="xz">the xy coordinate to spawn (height is determined by terrain</param>
         /// <param name="item">the item to spawn</param>
         /// <returns>True if the item was successfully spawned, false otherwise</returns>
+        [Server]
         private bool AttemptSpawnOnTerrain(Vector2 xz, GameObject item)
         {
             // raycast down from the sky to find the terrain height at this location, then spawn the item there
@@ -207,6 +220,21 @@ namespace ProceduralGeneration
                     float offset = hit.point.y - itemBounds.min.y;
                     spawnedItem.transform.position += new Vector3(0f, offset, 0f);
                 }
+
+                Debug.DrawLine(
+                    new Vector3(
+                        spawnedItem.transform.position.x,
+                        spawnedItem.transform.position.y,
+                        spawnedItem.transform.position.z
+                    ),
+                    new Vector3(
+                        spawnedItem.transform.position.x,
+                        spawnedItem.transform.position.y + 60f,
+                        spawnedItem.transform.position.z
+                    ),
+                    Color.greenYellow,
+                    120f
+                );
 
                 NetworkServer.Spawn(spawnedItem);
 

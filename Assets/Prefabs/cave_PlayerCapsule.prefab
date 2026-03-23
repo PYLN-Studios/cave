@@ -796,20 +796,20 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  MoveSpeed: 4
-  SprintSpeed: 7
+  MoveSpeed: 10
+  SprintSpeed: 22
   RotationSpeed: 1
   SpeedChangeRate: 10
-  JumpHeight: 1.2
+  JumpHeight: 3
   Gravity: -15
   JumpTimeout: 0.1
   FallTimeout: 0.15
   Grounded: 1
-  GroundedOffset: -0.14
+  GroundedOffset: -0.15
   GroundedRadius: 0.5
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 128
   CinemachineCameraTarget: {fileID: 4135013735270702863}
   TopClamp: 90
   BottomClamp: -90
@@ -849,6 +849,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a313482a2f2a8429c2a8370de1462e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  maxRaycastDistance: 5
 --- !u!114 &7012345678901234561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,6 +925,7 @@ MonoBehaviour:
   jump: 0
   sprint: 0
   attack: 0
+  use: 0
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
@@ -1034,6 +1039,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a313482a2f2a8429c2a8370de1462e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCollecting
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  maxRaycastDistance: 5
 --- !u!114 &2061820958901467414
 MonoBehaviour:
   m_ObjectHideFlags: 0
