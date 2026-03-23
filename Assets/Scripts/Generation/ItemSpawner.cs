@@ -13,7 +13,7 @@ namespace ProceduralGeneration
 {
     /// <summary>
     /// ItemSpawner is responsible for generating items the first time a biome is generated.
-    /// 
+    /// Based on https://brendanhu.atlassian.net/wiki/spaces/~7120208c3305a0c7bc41a9ad43a6fbba092622/whiteboard/8388610
     /// </summary>
     public class ItemSpawner : NetworkBehaviour
     {
@@ -50,15 +50,16 @@ namespace ProceduralGeneration
         /// <param name="seed">designates which part of the perlin noise to use (x=0, y=100*seed)</param>
         /// <param name="spawnData">a 2d array of spawn data. the parent array holds each group of items</param>
         /// <param name="area">the game world area to try to spawn items in. Defaults to looking for a terrain object but you should probably explicitly set this.</param>
-        /// <param name="resolution">higher values mean its more "zoomed out" in the perlin noise, creating smaller groups</param>
+        /// <param name="perlinArea">higher values mean its more "zoomed out" in the perlin noise, creating smaller groups</param>
         /// <param name="scanInterval">distance between points to check</param>
-        /// <param name="jitterDistance">vary where we scan randomly</param>
+        /// <param name="jitterRealDistance">vary where we scan randomly</param>
+        /// <param name="jitterPerlin">vary the perlin noise value randomly to create more variation in group sizes</param>
         [Server]
         public void FindCandidateSpawns(
             int seed,
             ItemSpawnData[][] spawnData,
             Rect area = default,
-            float perlinResolution = 100f,
+            float perlinArea = 100f,
             float scanInterval = 1f,
             float jitterRealDistance = 0.3f,
             float jitterPerlin = 0.04f
@@ -102,8 +103,8 @@ namespace ProceduralGeneration
             {
                 for (float y = area.yMin; y <= area.yMax; y += scanInterval)
                 {
-                    float perlinScalingX = perlinResolution / area.width;
-                    float perlinScalingY = perlinResolution / area.height;
+                    float perlinScalingX = perlinArea / area.width;
+                    float perlinScalingY = perlinArea / area.height;
 
                     float perlinX = x * perlinScalingX;
                     float perlinY = (y * perlinScalingY) + (seed * 1000f);
