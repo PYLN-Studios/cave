@@ -47,7 +47,7 @@ namespace ProceduralGeneration
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="seed">designates which part of the perlin noise to use (x=0, y=100*seed)</param>
+        /// <param name="seed">designates which part of the perlin noise to use (x=0, y=1000*seed)</param>
         /// <param name="spawnData">a 2d array of spawn data. the parent array holds each group of items</param>
         /// <param name="area">the game world area to try to spawn items in. Defaults to looking for a terrain object but you should probably explicitly set this.</param>
         /// <param name="perlinArea">higher values mean its more "zoomed out" in the perlin noise, creating smaller groups</param>
