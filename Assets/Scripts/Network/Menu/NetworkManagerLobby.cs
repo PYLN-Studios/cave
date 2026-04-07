@@ -237,7 +237,14 @@ public class NetworkManagerLobby : NetworkManager
     {
         if (SceneManager.GetActiveScene().path != menuScene)
         {
-            SpawnWorldItems();
+            TerrainGenerator terrainGenerator = FindFirstObjectByType<TerrainGenerator>();
+            if (terrainGenerator != null)
+            {
+                terrainGenerator.CreateNewMap(1);
+            }
+
+            // temporarily commented out as i fix some bugs
+            //SpawnWorldItems();
         }
 
         if (playerSpawnSystem != null)

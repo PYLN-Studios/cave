@@ -38,8 +38,6 @@ namespace ProceduralGeneration
 
         #endregion
 
-        private Terrain worldTerrain;
-
         public Rect defaultRect = new Rect(0, 0, 0, 0);
 
         private int spawnAttempts = 3;  // max spawn attempts per item before giving up
@@ -69,23 +67,43 @@ namespace ProceduralGeneration
             // note: itemSpawner uses the perlin noise in a line near x = 0 and positive y, please avoid this when generating terrain!
             Random.InitState(seed);
 
-            // if the area is default, look for a terrain object and use its bounds as the area to spawn in
-            worldTerrain = FindFirstObjectByType<Terrain>();
             if (area == default)
             {
-                if (worldTerrain == null)
+                // if the area is default, look for a terrain object and use its bounds as the area to spawn in
+                Terrain worldTerrain = FindFirstObjectByType<Terrain>();
+
+                if (worldTerrain != null)
                 {
-                    Debug.LogError("ItemSpawner could not find a Terrain to use for spawning.");
-                    return;
+                    // don't spawn right at the edges
+                    area = new Rect(
+                        worldTerrain.transform.position.x + 4.0f,
+                        worldTerrain.transform.position.z + 4.0f,
+                        worldTerrain.terrainData.size.x - 8.0f,
+                        worldTerrain.terrainData.size.z - 8.0f
+                    );
                 }
 
-                // don't spawn right at the edges
-                area = new Rect(
-                    worldTerrain.transform.position.x + 4.0f,
-                    worldTerrain.transform.position.z + 4.0f,
-                    worldTerrain.terrainData.size.x - 8.0f,
-                    worldTerrain.terrainData.size.z - 8.0f
-                );
+                TerrainGenerator terrainGenerator = FindFirstObjectByType<TerrainGenerator>();
+                Mesh generatedMesh = null;
+
+                if (terrainGenerator != null && terrainGenerator.transform.parent != null)
+                {
+                    MeshCollider meshCollider = terrainGenerator.transform.parent.GetComponentInChildren<MeshCollider>();
+
+                    if (meshCollider != null)
+                    {
+                        generatedMesh = meshCollider.sharedMesh;
+
+                        Bounds meshBounds = meshCollider.bounds;
+                        area = new Rect(
+                            meshBounds.min.x + 4.0f,
+                            meshBounds.min.z + 4.0f,
+                            meshBounds.size.x - 8.0f,
+                            meshBounds.size.z - 8.0f
+                        );
+                    }
+                }
+
             }
 
             int numGroups = spawnData.Length;
@@ -201,7 +219,9 @@ namespace ProceduralGeneration
             // raycast down from the sky to find the terrain height at this location, then spawn the item there
             // raycast only hits terrain and not other objects, so we don't have to worry about hitting other items or players
             RaycastHit hit;
-            if (Physics.Raycast(new Vector3(xz.x, 1000f, xz.y), Vector3.down, out hit, Mathf.Infinity, LayerMask.GetMask("Terrain")))
+            Physics.Raycast(new Vector3(xz.x, 1000f, xz.y), Vector3.down, out hit, Mathf.Infinity, LayerMask.GetMask("Terrain"));
+
+            if (hit.collider != null)
             {
                 // spawn the item at the hit point, calculate the height of the item so its not stuck in the ground
                 GameObject spawnedItem = Instantiate(item, hit.point, Quaternion.identity);
