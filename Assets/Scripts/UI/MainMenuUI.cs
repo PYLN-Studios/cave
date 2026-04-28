@@ -21,9 +21,28 @@ public class MainMenuUI : MonoBehaviour
 
     private NetworkManagerLobby networkManager;
 
+    private bool TryResolveNetworkManager()
+    {
+        if (networkManager != null)
+            return true;
+
+        networkManager = NetworkManager.singleton as NetworkManagerLobby;
+
+        if (networkManager == null)
+            networkManager = FindObjectOfType<NetworkManagerLobby>(true);
+
+        if (networkManager == null)
+        {
+            Debug.LogError("MainMenuUI could not find an active NetworkManagerLobby in the scene.");
+            return false;
+        }
+
+        return true;
+    }
+
     private void Start()
     {
-        networkManager = NetworkManager.singleton as NetworkManagerLobby;
+        TryResolveNetworkManager();
 
         // Setup button listeners
         if (hostButton != null)
@@ -58,6 +77,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnHostClicked()
     {
+        if (!TryResolveNetworkManager()) return;
         networkManager.StartHost();
     }
 
@@ -69,6 +89,7 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnConnectClicked()
     {
+        if (!TryResolveNetworkManager()) return;
         string ipAddress = ipAddressInput.text;
         networkManager.networkAddress = ipAddress;
         networkManager.StartClient();
