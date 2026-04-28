@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2888579838572643362
 Transform:
   m_ObjectHideFlags: 0
@@ -93,6 +93,7 @@ MonoBehaviour:
   gamePlayerPrefab: {fileID: 4197902716107249976, guid: da31246df5106724b98ebc98004e729c, type: 3}
   playerSpawnSystem: {fileID: 367161713768272800, guid: 511c534bf6714ad47a39a36dfc31266b, type: 3}
   roundSystem: {fileID: 0}
+  watermelonV2Prefab: {fileID: 3555974162018079182, guid: a841ce8592d2c854b962505759dcc671, type: 3}
   spearPrefab: {fileID: 7189551588235009149, guid: cc8d34f4e8697024596bba030025d1f9, type: 3}
   vitalsAutosaveInterval: 15
 --- !u!114 &8196721563867378869

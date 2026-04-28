@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Player;
+using ProceduralGeneration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,6 +30,9 @@ public class NetworkManagerLobby : NetworkManager
     [SerializeField] private NetworkGamePlayerLobby gamePlayerPrefab = null;
     [SerializeField] private GameObject playerSpawnSystem = null;
     [SerializeField] private GameObject roundSystem = null;
+
+    [Header("Items")]
+    [SerializeField] private GameObject watermelonV2Prefab = null;
 
     [SerializeField] private GameObject spearPrefab;
     private uint projectileGuid;
@@ -179,7 +183,7 @@ public class NetworkManagerLobby : NetworkManager
             SetupProjectilePrefabs();
     
             mapHandler = new MapHandler(mapSet, numberOfRounds);
-            ServerChangeScene("CaveWorldScene");
+            ServerChangeScene("TestScene");
         }
     }
 
@@ -231,6 +235,18 @@ public class NetworkManagerLobby : NetworkManager
 
     public override void OnServerSceneChanged(string sceneName)
     {
+        if (SceneManager.GetActiveScene().path != menuScene)
+        {
+            TerrainGenerator terrainGenerator = FindFirstObjectByType<TerrainGenerator>();
+            if (terrainGenerator != null)
+            {
+                terrainGenerator.CreateNewMap(1);
+            }
+
+            // temporarily commented out as i fix some bugs
+            //SpawnWorldItems();
+        }
+
         if (playerSpawnSystem != null)
         {
             GameObject playerSpawnSystemInstance = Instantiate(playerSpawnSystem);
@@ -242,6 +258,35 @@ public class NetworkManagerLobby : NetworkManager
             GameObject roundSystemInstance = Instantiate(roundSystem);
             NetworkServer.Spawn(roundSystemInstance);
         }
+    }
+
+    [Server]
+    private void SpawnWorldItems()
+    {
+        if (watermelonV2Prefab == null)
+        {
+            Debug.LogError("NetworkManagerLobby is missing the watermelonV2Prefab reference.");
+            return;
+        }
+
+        GameObject itemSpawnerObject = new GameObject("ItemSpawner");
+        ItemSpawner itemSpawner = itemSpawnerObject.AddComponent<ItemSpawner>();
+
+        ItemSpawnData[][] spawnData = new[]
+        {
+            new[]
+            {
+                new ItemSpawnData
+                {
+                    item = watermelonV2Prefab,
+                    spawnGroup = 0,
+                    minRate = 40,
+                    maxRate = 60
+                }
+            }
+        };
+
+        itemSpawner.FindCandidateSpawns(0, spawnData);
     }
 
     public override void OnServerReady(NetworkConnectionToClient conn)
